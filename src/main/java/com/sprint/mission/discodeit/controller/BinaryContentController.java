@@ -29,7 +29,9 @@ public class BinaryContentController implements BinaryContentApi {
         return ResponseEntity.ok().body(binaryContentService.find(uuid));
     }
 
-    public List<BinaryContentResponseDto> findAllByIdIn() {
-        return binaryContentService.findAll();
+    public List<BinaryContentResponseDto> findAllByIdIn(
+            @RequestParam List<UUID> binaryContentIds
+    ) {
+        return binaryContentService.findAllByIds(binaryContentIds);
     }
 }

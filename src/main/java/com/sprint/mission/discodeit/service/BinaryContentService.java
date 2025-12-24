@@ -19,5 +19,5 @@ public interface BinaryContentService {
 
     void delete(UUID uuid);
 
-    List<BinaryContentResponseDto> findAll();
+    List<BinaryContentResponseDto> findAllByIds(List<UUID> uuids);
 }

@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.UUID;
@@ -58,6 +59,7 @@ public interface BinaryContentApi {
                     )
             )
     })
-    public List<BinaryContentResponseDto> findAllByIdIn();
-
+    public List<BinaryContentResponseDto> findAllByIdIn(
+            @RequestParam List<UUID> binaryContentIds
+    );
 }

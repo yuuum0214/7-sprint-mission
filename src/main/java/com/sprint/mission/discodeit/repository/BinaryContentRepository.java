@@ -11,12 +11,4 @@ import java.util.UUID;
 
 public interface BinaryContentRepository extends JpaRepository<BinaryContent, UUID> {
 
-    // 저장 : save
-
-    // 조회 : findById
-
-    List<BinaryContent> findAllById(Channel channel);
-
-    // 삭제 : delete
-
 }
