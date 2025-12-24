@@ -13,21 +13,20 @@ import java.util.UUID;
 @Builder
 public class LoginResponseDto {
 //    private final String id;
+    private final UUID id;
     private final String username; //
     private final String email; //
-    private final String password;
-    private final Instant createdAt;
-    private final Instant updatedAt;
-    private final UUID id;
-    private final UUID profileId;
+    private final Boolean online;
+    private final BinaryContentResponseDto profile;
 
     public static LoginResponseDto from(User user) {
         return LoginResponseDto.builder()
                 .id(user.getId())
                 .username(user.getUserName())
                 .email(user.getEmail())
-                .createdAt(user.getCreatedAt())
-                .updatedAt(user.getUpdatedAt())
+                .online(user.getUserStatus().isOnline())
+                .profile(user.getProfile() == null ? null :
+                        BinaryContentResponseDto.from(user.getProfile()))
                 .build();
     }
 }
