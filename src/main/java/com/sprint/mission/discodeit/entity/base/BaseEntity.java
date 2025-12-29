@@ -18,16 +18,10 @@ public class BaseEntity {//implements Serializable {
     private UUID id; //객체 식별 id
 
     @CreatedDate
-    @Column(name = "createAt", updatable = false, nullable = false)
+    @Column(name = "created_at", updatable = false, nullable = false)
     private Instant createdAt;
 
     public BaseEntity(){
-        this.id = UUID.randomUUID();
         this.createdAt = Instant.now();
-    }
-
-    public BaseEntity(UUID uuid, Instant createdAt) {
-        this.id = uuid;
-        this.createdAt = createdAt;
     }
 }

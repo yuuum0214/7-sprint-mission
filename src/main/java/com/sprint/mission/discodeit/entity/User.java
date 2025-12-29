@@ -22,7 +22,7 @@ public class User extends BaseUpdatableEntity {
     @Column(length = 100, nullable = false, unique = true)
     private String email; //이메일
 
-    @Column(name = "user_name", length = 50, nullable = false, unique = true)
+    @Column(name = "username", length = 50, nullable = false, unique = true)
     private String userName; //유저 이름
 
     //    private UUID profileImageId; //프로필
@@ -31,7 +31,7 @@ public class User extends BaseUpdatableEntity {
     private BinaryContent profile;
 
     // 1:1 관계
-    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true) // TODO: CASCADE.ALL , orphanRemoval 왜 쓰는지 공부할것! by 태언
     private UserStatus userStatus;
 
     public User(String password, String email, String userName, BinaryContent profile) {
@@ -64,5 +64,9 @@ public class User extends BaseUpdatableEntity {
         if (newProfile != null && !newProfile.equals(this.profile)) { //프로필 변경
             this.profile = newProfile;
         }
+    }
+
+    public void setUserStatus(UserStatus newUserStatus) { // TODO: setUserStatus로 쓰지말고 편의 메서드 방식으로 리펙토링 해서 쓸것 by 태언
+        this.userStatus = newUserStatus;
     }
 }

@@ -32,7 +32,7 @@ public class Message extends BaseUpdatableEntity {
     // N:M 관계
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "message_attachements",
+            name = "message_attachments",
             joinColumns = @JoinColumn(name = "message_id"),
             inverseJoinColumns = @JoinColumn(name = "attachment_id")
     )
