@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
@@ -17,7 +18,6 @@ import java.util.UUID;
 public interface UserApi {
 
     //사용자 생성
-    @PostMapping(consumes = "multipart/form-data") //MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "User 등록")
     @ApiResponses(value = {
             @ApiResponse(
@@ -36,10 +36,11 @@ public interface UserApi {
                     )
             )
     })
-    public void create(@ModelAttribute UserCreateRequestDto userCreateRequest);
+     void create(UserCreateRequestDto userCreateRequestDto,
+                  MultipartFile profile);
 
     //전체 조회
-    @GetMapping(params = "!userId")
+
     @Operation(summary = "전체 User 목록 조회", operationId = "findAll")
     @ApiResponses(value = {
             @ApiResponse(
@@ -53,7 +54,6 @@ public interface UserApi {
     public List<UserResponseDto> findAll();
 
     //사용자 수정
-    @PatchMapping(path = "{userId}", consumes = "multipart/form-data")
     @Operation(summary = "User 정보 수정")
     @ApiResponses(value = {
             @ApiResponse(
@@ -85,7 +85,6 @@ public interface UserApi {
             @PathVariable UUID userId, @ModelAttribute UserUpdateRequestDto userUpdateRequestDto);
 
     //사용자 삭제
-    @DeleteMapping("/{userId}")
     @Operation(summary = "User 삭제")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "User가 성공적으로 삭제됨"),

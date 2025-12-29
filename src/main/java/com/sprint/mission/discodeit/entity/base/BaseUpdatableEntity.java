@@ -16,7 +16,7 @@ import java.time.Instant;
 public class BaseUpdatableEntity extends BaseEntity {
 
     @LastModifiedDate
-    @Column(name = "updateAt")
+    @Column(name = "updated_at")
     private Instant updatedAt;
 
     public BaseUpdatableEntity(Instant updatedAt) {

@@ -36,24 +36,32 @@ public class UserController implements UserApi {
     private final UserService userService;
 
     //사용자 생성
-    public void create( @ModelAttribute UserCreateRequestDto userCreateRequest) {
-        userService.createUser(userCreateRequest);
+    @PostMapping(consumes = "multipart/form-data")
+    public void create(
+            @RequestPart("userCreateRequest") UserCreateRequestDto userCreateRequest,
+            @RequestPart(value = "profile", required = false) MultipartFile profile
+    ) {
+        System.out.println("userCreateRequest = " + userCreateRequest.getUsername());
+        userService.createUser(userCreateRequest, profile);
     }
 
     //전체 조회
-    public List<UserResponseDto>  findAll () {
+    @GetMapping
+    public List<UserResponseDto> findAll() {
         return userService.findAllUser();
     }
 
     //사용자 수정
-    public void update (
+    @PatchMapping(value= "/{userId}", consumes = "multipart/form-data")
+    public void update(
             @Parameter(description = "수정할 User ID")
             @PathVariable UUID userId, @ModelAttribute UserUpdateRequestDto userUpdateRequestDto) {
         userService.updateUser(userId, userUpdateRequestDto);
     }
 
     //사용자 삭제
-    public void delete (
+    @DeleteMapping("/{userId}")
+    public void delete(
             @Parameter(description = "삭제할 User ID")
             @PathVariable("userId") UUID userId) {
         userService.deleteUser(userId);
