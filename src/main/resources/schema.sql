@@ -1,3 +1,12 @@
+--- 존재하면 지우고 실행
+DROP TABLE IF EXISTS message_attachments CASCADE;
+DROP TABLE IF EXISTS read_statuses CASCADE;
+DROP TABLE IF EXISTS messages CASCADE;
+DROP TABLE IF EXISTS user_statuses CASCADE;
+DROP TABLE IF EXISTS channels CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS binary_contents CASCADE;
+
 -- 테이블
 -- Users
 CREATE TABLE users (
@@ -17,8 +26,7 @@ CREATE TABLE channels (
     description VARCHAR(500),
     created_at  timestamp with time zone NOT NULL,
     updated_at  timestamp with time zone,
--- type VARCHAR(10) NOT NULL ?
-    type        channel_type             NOT NULL
+    type VARCHAR(10) NOT NULL
 );
 
 -- Messages
@@ -37,8 +45,7 @@ CREATE TABLE binary_contents (
     file_name    VARCHAR(255)              NOT NULL,
     size         BIGINT                    NOT NULL,
     content_type VARCHAR(100)              NOT NULL,
-    bytes        BYTEA                     NOT NULL,
-    created_at   timestamp with time zone  NOT NULL,
+    created_at   timestamp with time zone  NOT NULL
 );
 
 -- Message Attachments
@@ -54,7 +61,7 @@ CREATE TABLE user_statuses (
     user_id        UUID UNIQUE              NOT NULL,
     last_active_at timestamp with time zone NOT NULL,
     created_at     timestamp with time zone NOT NULL,
-    updated_at     timestamp with time zone,
+    updated_at     timestamp with time zone
 );
 
 -- Read status
@@ -76,7 +83,7 @@ CREATE TABLE read_statuses (
 ALTER TABLE users
     ADD CONSTRAINT fk_users_binary_content
         FOREIGN KEY (profile_id)
-            REFERENCES profiles(id)
+            REFERENCES binary_contents(id)
             ON DELETE SET NULL;
 
 ALTER TABLE user_statuses

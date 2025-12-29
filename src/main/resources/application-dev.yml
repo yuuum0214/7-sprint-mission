@@ -1,8 +1,5 @@
 
 spring:
-#  profiles:
-#    active: dev
-
   datasource:
     url: jdbc:h2:mem:discodeit
     driver-class-name: org.h2.Driver
@@ -11,7 +8,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: validate
     properties:
       hibernate:
         show_sql: true
@@ -20,7 +17,14 @@ spring:
 
   sql:
     init:
-      mode: never
+      mode: always
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+
 
 server:
   port: 8080
