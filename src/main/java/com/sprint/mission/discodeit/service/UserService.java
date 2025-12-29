@@ -3,13 +3,14 @@ package com.sprint.mission.discodeit.service;
 import com.sprint.mission.discodeit.dto.request.UserCreateRequestDto;
 import com.sprint.mission.discodeit.dto.request.UserUpdateRequestDto;
 import com.sprint.mission.discodeit.dto.response.UserResponseDto;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface UserService {
 
-    void createUser(UserCreateRequestDto userCreateRequestDto); //유저 생성
+    void createUser(UserCreateRequestDto userCreateRequestDto, MultipartFile file); //유저 생성
 
 //    User readUser(UUID uuid); //특정 user 조회
     UserResponseDto findById(UUID userId); //특정 user 조회

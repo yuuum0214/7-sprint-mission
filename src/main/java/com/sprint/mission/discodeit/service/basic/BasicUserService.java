@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Instant;
 import java.util.*;
@@ -31,11 +32,11 @@ public class BasicUserService implements UserService {
 
     @Transactional
     @Override
-    public void createUser(UserCreateRequestDto userCreateRequest) {
+    public void createUser(UserCreateRequestDto userCreateRequest, MultipartFile file) {
 
         //유저 생성
         if (userRepository.existsByEmail(userCreateRequest.getEmail()) ||
-                userRepository.existsByUserName(userCreateRequest.getUserName())) {
+                userRepository.existsByUserName(userCreateRequest.getUsername())) {
             throw new IllegalArgumentException("이미 존재하는 Name 혹은 Email 입니다.");
         }
 
@@ -43,31 +44,37 @@ public class BasicUserService implements UserService {
         User user = new User(
                 userCreateRequest.getPassword(),
                 userCreateRequest.getEmail(),
-                userCreateRequest.getUserName(),
+                userCreateRequest.getUsername(),
                 null
                 );
 
         //프로필 이미지 등록(선택)
-        if (userCreateRequest.getProfile() != null
-                && !userCreateRequest.getProfile().isEmpty()) {
+        if (!file.isEmpty()) {
+            System.out.println("file!!!!! :  " + file.getName());
             try {
                 BinaryContent profile = new BinaryContent(
-                        userCreateRequest.getProfile().getOriginalFilename(),
-                        userCreateRequest.getProfile().getSize(),
-                        userCreateRequest.getProfile().getContentType()
+                        file.getOriginalFilename(),
+                        file.getSize(),
+                        file.getContentType()
 //                        userCreateRequest.getProfile().getBytes()
                 );
                 user.changeProfile(profile);
+               UserStatus userStatus = new UserStatus(user);
+               user.setUserStatus(userStatus); // TODO: setUstate 를 리펙토링할것
+
                 binaryContentRepository.save(profile);
             } catch (Exception e) {
                 throw new RuntimeException("프로필 처리 중 ERROR", e);
             }
         }
 
+        log.info("DTO.email = {}", userCreateRequest.getEmail());
+        log.info("DTO.userName = {}", userCreateRequest.getUsername());
+
         userRepository.save(user);
 
         System.out.println("[User 생성 완료] ID: " + user.getUserName() + ", UUID: " + user.getId());
-        System.out.println("현재 저장된 유저 수: " + userRepository.findAll().size());
+//        System.out.println("현재 저장된 유저 수: " + userRepository.findAll().size());
     }
 
     @Transactional(readOnly = true)
