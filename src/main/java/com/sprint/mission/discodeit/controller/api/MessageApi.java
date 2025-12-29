@@ -20,7 +20,6 @@ import java.util.UUID;
 public interface MessageApi {
 
     // 메시지 전송(저장)
-    @PostMapping(consumes = "multipart/form-data")
     @Operation(summary = "Message 생성", operationId = "create_2")
     @ApiResponses(value = {
             @ApiResponse(
@@ -46,7 +45,6 @@ public interface MessageApi {
     );
 
     // 메시지 수정
-    @PatchMapping(value = "/{messageId}") //, consumes = "multipart/form-data")
     @Operation(summary = "Message 내용 수정", operationId = "update_2")
     @ApiResponses(value = {
             @ApiResponse(
@@ -70,7 +68,6 @@ public interface MessageApi {
     );
 
     // 메시지 삭제
-    @DeleteMapping("/{messageId}")
     @Operation(summary = "Message 삭제", operationId = "delete_1")
     @ApiResponses(value = {
             @ApiResponse(
@@ -92,7 +89,6 @@ public interface MessageApi {
     );
 
     // 특정 채널 메시지 목록 조회
-    @GetMapping
     @Operation(summary = "Channel의 Message 목록 조회", operationId = "findAllByChannelId")
     @ApiResponses(value = {
             @ApiResponse(

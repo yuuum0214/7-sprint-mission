@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController implements AuthApi {
     private final AuthService authService;
 
+    @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequestDto) {
         return ResponseEntity.ok(authService.login(loginRequestDto));
     }

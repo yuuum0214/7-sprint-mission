@@ -19,7 +19,6 @@ import java.util.UUID;
 
 public interface BinaryContentApi {
 
-    @GetMapping("/{binaryContentId}")
     @Operation(summary = "첨부 파일 조회", operationId = "find")
     @ApiResponses({
             @ApiResponse(
@@ -45,7 +44,6 @@ public interface BinaryContentApi {
     );
 
 
-    @GetMapping
     @Operation(summary = "여러 첨부 파일 조회")
     @ApiResponses(value = {
             @ApiResponse(

@@ -22,7 +22,6 @@ import java.util.UUID;
 public interface ChannelApi {
 
     // 공개 채널 생성
-    @PostMapping("/public")
     @Operation(summary = "Public Channel 생성", operationId = "create_3")
     @ApiResponses(value = {
             @ApiResponse(
@@ -38,7 +37,6 @@ public interface ChannelApi {
             @RequestBody ChannelPublicCreateRequestDto channelPublicCreateRequestDto
     );
 
-    @PostMapping("/private")
     @Operation(summary = "Private Channel 생성", operationId = "create_4")
     @ApiResponses(value = {
             @ApiResponse(
@@ -55,7 +53,6 @@ public interface ChannelApi {
     );
 
     // 공개 채널 정보 수정
-    @PatchMapping("/{channelId}")
     @Operation(summary = "Channel 정보 수정", operationId = "update_3")
     @ApiResponses(value = {
             @ApiResponse(
@@ -84,7 +81,6 @@ public interface ChannelApi {
     );
 
     // 채널 삭제
-    @DeleteMapping("/{channelId}")
     @Operation(summary = "Channel 삭제", operationId = "delete_2")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Channel이 성공적으로 삭제됨"),
@@ -103,7 +99,6 @@ public interface ChannelApi {
     );
 
     // 특정 사용자의 채널 목록 조회
-    @GetMapping
     @Operation(summary = "User가 참여 중인 Channel 목록 조회", operationId = "findAll_1")
     @ApiResponses(value = {
             @ApiResponse(

@@ -19,7 +19,6 @@ import java.util.UUID;
 
 public interface ReadStatusApi {
 
-    @PostMapping
     @Operation(summary = "Message 읽음 상태 생성")
     @ApiResponses(value = {
             @ApiResponse(
@@ -47,7 +46,6 @@ public interface ReadStatusApi {
                                   @RequestParam User userId,
                                   @RequestParam Channel channelId);
 
-    @PatchMapping("/{readStatusId}")
     @Operation(summary = "Message 읽음 상태 수정", operationId = "update_1")
     @ApiResponses(value = {
             @ApiResponse(
@@ -67,7 +65,6 @@ public interface ReadStatusApi {
                                       @PathVariable UUID readStatusId,
                                       @RequestBody ReadStatusUpdateRequestDto readStatusUpdateRequestDto);
 
-    @GetMapping(params = "userId")
     @Operation(summary = "User의 Message 읽음 상태 목록 조회")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Message 읽음 상태 목록 조회 성공")

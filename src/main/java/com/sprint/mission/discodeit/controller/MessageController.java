@@ -33,6 +33,7 @@ public class MessageController implements MessageApi {
     private final ChannelRepository channelRepository;
 
     // 메시지 전송(저장)
+    @PostMapping(consumes = "multipart/form-data")
     public MessageResponseDto createMessage(
             @ModelAttribute MessageCreateRequestDto messageCreateRequest,
             @RequestPart(value = "attachments", required = false) List<MultipartFile> files) {
@@ -42,6 +43,7 @@ public class MessageController implements MessageApi {
     }
 
     // 메시지 수정
+    @PatchMapping(value = "/{messageId}") //, consumes = "multipart/form-data")
     public MessageResponseDto updateMessage(
             @Parameter(description = "수정할 Message ID")
             @PathVariable Message messageId
@@ -55,6 +57,7 @@ public class MessageController implements MessageApi {
     }
 
     // 메시지 삭제
+    @DeleteMapping("/{messageId}")
     public void deleteMessage(
             @Parameter(description = "삭제할 Message ID")
             @PathVariable UUID messageId) {
@@ -62,6 +65,7 @@ public class MessageController implements MessageApi {
     }
 
     // 특정 채널 메시지 목록 조회
+    @GetMapping
     public List<MessageResponseDto> getMessageByChannel(
             @Parameter(description = "조회할 Channel ID")
             @RequestParam UUID channelId) {

@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface AuthApi {
 
 
-    @PostMapping("/login")
     @Operation(summary = "로그인")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그인 성공"),
