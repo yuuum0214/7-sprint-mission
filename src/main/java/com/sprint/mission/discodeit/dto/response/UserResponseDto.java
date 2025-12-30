@@ -15,7 +15,7 @@ import java.util.UUID;
 @Builder
 public class UserResponseDto {
     private UUID id;
-    private String userName;
+    private String username;
     private String email;
     private Boolean isOnline;
     private BinaryContentResponseDto profile;
@@ -23,7 +23,7 @@ public class UserResponseDto {
     public static UserResponseDto from(User user, UserStatus userStatus, BinaryContent binaryContent) {
         return UserResponseDto.builder()
                 .id(user.getId())
-                .userName(user.getUserName())
+                .username(user.getUserName())
                 .email(user.getEmail())
                 .isOnline(userStatus != null && userStatus.isOnline())
                 .profile(binaryContent != null
