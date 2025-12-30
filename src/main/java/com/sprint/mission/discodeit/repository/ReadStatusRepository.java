@@ -13,13 +13,13 @@ public interface ReadStatusRepository extends JpaRepository<ReadStatus, UUID> {
     // 유저-채널 읽음 상태 저장 : save
 
     // 특정 유저가 특정 채널에서 마지막으로 읽은 시점을 가져옴
-    ReadStatus findByUserAndChannel(User user, Channel channel);
+    ReadStatus findByUserIdAndChannelId(UUID userId, UUID channelId);
 
     // 채널 참여자별 미확인 메시지 수 계산
-    List<ReadStatus> findByChannelId(Channel channel);
+    List<ReadStatus> findByChannelId(UUID channelId);
 
     // 유저가 여러 채널을 어디까지 읽었는지 목록 조회
-    List<ReadStatus> findByUserId(User user);
+    List<ReadStatus> findByUserId(UUID userId);
 
     // 읽음 상태 업데이트
 //    void update(ReadStatus readStatus);
@@ -27,5 +27,7 @@ public interface ReadStatusRepository extends JpaRepository<ReadStatus, UUID> {
     // 사용자가 채널을 떠난 경우 삭제 : delete
 
     // 특정 채널 읽음 상태 삭제, 채널 삭제 시 cascade
-    void deleteAllByChannelId(Channel channel);
+    void deleteAllByChannelId(UUID channelId);
+
+    UUID userId(UUID userId);
 }

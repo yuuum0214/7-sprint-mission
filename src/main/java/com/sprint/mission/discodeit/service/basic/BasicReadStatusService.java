@@ -28,9 +28,9 @@ public class BasicReadStatusService implements ReadStatusService {
     @Transactional
     @Override
     public ReadStatusDto create(ReadStatusCreateRequestDto readStatusCreateRequestDto) {
-        ReadStatus existing = readStatusRepository.findByUserAndChannel(
-                readStatusCreateRequestDto.getUser(),
-                readStatusCreateRequestDto.getChannel()
+        ReadStatus existing = readStatusRepository.findByUserIdAndChannelId(
+                readStatusCreateRequestDto.getUser().getId(),
+                readStatusCreateRequestDto.getChannel().getId()
         );
         if (existing != null) throw new IllegalArgumentException("ReadStatus already exists");
 
@@ -60,7 +60,7 @@ public class BasicReadStatusService implements ReadStatusService {
     public List<ReadStatusDto> findAllByUserId(UUID uuid) {
         User user = userRepository.findById(uuid)
                 .orElseThrow(()->new IllegalArgumentException("User not found"));
-        return readStatusRepository.findByUserId(user)
+        return readStatusRepository.findByUserId(user.getId())
                 .stream()
                 .map(ReadStatusDto::from)
                 .collect(Collectors.toList());
