@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @Getter
@@ -16,7 +17,7 @@ public class UserResponseDto {
     private UUID id;
     private String userName;
     private String email;
-    private String status;
+    private Boolean isOnline;
     private BinaryContentResponseDto profile;
 
     public static UserResponseDto from(User user, UserStatus userStatus, BinaryContent binaryContent) {
@@ -24,10 +25,9 @@ public class UserResponseDto {
                 .id(user.getId())
                 .userName(user.getUserName())
                 .email(user.getEmail())
-//                .status(user.getUserStatus() != null
-//                        ? user.getUserStatus().getStatus().name() : null)
-                .profile(user.getProfile() != null
-                        ? BinaryContentResponseDto.from(user.getProfile()) : null)
+                .isOnline(userStatus != null && userStatus.isOnline())
+                .profile(binaryContent != null
+                        ? BinaryContentResponseDto.from(binaryContent) : null)
                 .build();
     }
 }

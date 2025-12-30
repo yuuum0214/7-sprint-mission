@@ -65,7 +65,7 @@ public class BasicUserStatusService implements UserStatusService {
                 .findFirst().orElseThrow(() -> new RuntimeException("해당 UserStatus를 찾을 수 없습니다."));
 
         if (userStatusUpdateRequestDto.getLastActiveAt() != null) {
-            userStatus.update();
+            userStatus.updateLastActiveAt(userStatusUpdateRequestDto.getLastActiveAt());
         }
         return UserStatusResponseDto.from(userStatus);
     }
@@ -79,7 +79,7 @@ public class BasicUserStatusService implements UserStatusService {
             throw new RuntimeException("해당 유저의 상태를 찾을 수 없습니다");
         }
         if (userStatusUpdateRequestDto.getLastActiveAt() != null) {
-            userStatus.update();
+            userStatus.updateLastActiveAt(userStatusUpdateRequestDto.getLastActiveAt());
         }
         return UserStatusResponseDto.from(userStatus);
     }

@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -49,7 +48,7 @@ public class BasicUserService implements UserService {
                 );
 
         //프로필 이미지 등록(선택)
-        if (!file.isEmpty()) {
+        if (file != null && !file.isEmpty()) {
             System.out.println("file!!!!! :  " + file.getName());
             try {
                 BinaryContent profile = new BinaryContent(
@@ -59,9 +58,6 @@ public class BasicUserService implements UserService {
 //                        userCreateRequest.getProfile().getBytes()
                 );
                 user.changeProfile(profile);
-               UserStatus userStatus = new UserStatus(user);
-               user.setUserStatus(userStatus); // TODO: setUstate 를 리펙토링할것
-
                 binaryContentRepository.save(profile);
             } catch (Exception e) {
                 throw new RuntimeException("프로필 처리 중 ERROR", e);
@@ -71,10 +67,15 @@ public class BasicUserService implements UserService {
         log.info("DTO.email = {}", userCreateRequest.getEmail());
         log.info("DTO.userName = {}", userCreateRequest.getUsername());
 
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
 
-        System.out.println("[User 생성 완료] ID: " + user.getUserName() + ", UUID: " + user.getId());
-//        System.out.println("현재 저장된 유저 수: " + userRepository.findAll().size());
+        // 상태 생성, 저장
+        UserStatus userStatus = new UserStatus(savedUser);
+        savedUser.changeStatus(userStatus); // TODO: setUstate 를 리펙토링할것
+
+        userStatusRepository.save(userStatus);
+
+        log.info("User Created = {}", userCreateRequest.getUsername());
     }
 
     @Transactional(readOnly = true)

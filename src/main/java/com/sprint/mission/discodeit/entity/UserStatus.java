@@ -31,13 +31,15 @@ public class UserStatus extends BaseUpdatableEntity {
         this.lastActiveAt = lastActiveAt;
     }
 
-    public void update() {
-        if(lastActiveAt != null && !lastActiveAt.equals(this.lastActiveAt)) {
-            this.lastActiveAt = lastActiveAt;
-        }
+    public void updateLastActiveAt(Instant newActiveAt) {
+        this.lastActiveAt = newActiveAt;
     }
 
     public boolean isOnline(){
         return Duration.between(lastActiveAt, Instant.now()).toMinutes() <= 5;
+    }
+
+    public void userInternal(User user){
+        this.user = user;
     }
 }

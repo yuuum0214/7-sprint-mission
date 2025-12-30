@@ -1,28 +1,21 @@
 package com.sprint.mission.discodeit.controller;
 
 import com.sprint.mission.discodeit.controller.api.UserApi;
-import com.sprint.mission.discodeit.dto.request.BinaryContentCreateRequestDto;
 import com.sprint.mission.discodeit.dto.request.UserCreateRequestDto;
+import com.sprint.mission.discodeit.dto.request.UserStatusUpdateRequestDto;
 import com.sprint.mission.discodeit.dto.request.UserUpdateRequestDto;
 import com.sprint.mission.discodeit.dto.response.UserResponseDto;
+import com.sprint.mission.discodeit.dto.response.UserStatusResponseDto;
 import com.sprint.mission.discodeit.service.UserService;
-import io.swagger.v3.oas.annotations.Operation;
+import com.sprint.mission.discodeit.service.UserStatusService;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.Part;
-import jakarta.websocket.server.PathParam;
-import jdk.jfr.Description;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,6 +27,7 @@ import java.util.UUID;
 public class UserController implements UserApi {
 
     private final UserService userService;
+    private final UserStatusService userStatusService;
 
     //사용자 생성
     @PostMapping(consumes = "multipart/form-data")
@@ -52,11 +46,21 @@ public class UserController implements UserApi {
     }
 
     //사용자 수정
-    @PatchMapping(value= "/{userId}", consumes = "multipart/form-data")
+    @PatchMapping(value = "/{userId}", consumes = "multipart/form-data")
     public void update(
             @Parameter(description = "수정할 User ID")
             @PathVariable UUID userId, @ModelAttribute UserUpdateRequestDto userUpdateRequestDto) {
         userService.updateUser(userId, userUpdateRequestDto);
+    }
+
+    //접속 상태 반영
+    @PatchMapping("/{userId}/userStatus")
+    public ResponseEntity<?> updateStatus(
+            @PathVariable UUID userId,
+            @RequestBody(required = false) UserStatusUpdateRequestDto userStatusUpdateRequestDto
+    ) {
+        userStatusService.updateByUserId(userId, userStatusUpdateRequestDto);
+        return ResponseEntity.ok().build();
     }
 
     //사용자 삭제

@@ -2,6 +2,7 @@ package com.sprint.mission.discodeit.repository;
 
 import com.sprint.mission.discodeit.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +17,8 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     // UUID로 유저 삭제 : delete
 
     Optional<User> findByUserName(String username);
+
     boolean existsByEmail(String email);
+
     boolean existsByUserName(String userName);
 }

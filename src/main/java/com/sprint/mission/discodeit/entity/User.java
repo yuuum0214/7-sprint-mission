@@ -66,7 +66,15 @@ public class User extends BaseUpdatableEntity {
         }
     }
 
-    public void setUserStatus(UserStatus newUserStatus) { // TODO: setUserStatus로 쓰지말고 편의 메서드 방식으로 리펙토링 해서 쓸것 by 태언
+    public void changeStatus(UserStatus newUserStatus) { // TODO: setUserStatus로 쓰지말고 편의 메서드 방식으로 리펙토링 해서 쓸것 by 태언
+        if(this.userStatus != null){
+            this.userStatus.userInternal(null);
+        }
+
         this.userStatus = newUserStatus;
+
+        if(newUserStatus != null && newUserStatus.getUser() != this){
+            newUserStatus.userInternal(this);
+        }
     }
 }
