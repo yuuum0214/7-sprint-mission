@@ -77,24 +77,24 @@ public class BasicMessageService implements MessageService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Message> findUserAllMessage(User users) {
-        if (users == null) {
+    public List<Message> findUserAllMessage(UUID userId) {
+        if (userId == null) {
             throw new IllegalStateException("유저 정보가 없습니다.");
         }
 
         return messageRepository.findAll().stream()
-                .filter(m -> m.getId().equals(users.getId()))
+                .filter(m -> m.getId().equals(userId))
                 .sorted(Comparator.comparing(Message::getCreatedAt))
                 .toList();
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<Message> findChannelAllMessage(Channel channels) {
-        if (channels == null) {
+    public List<Message> findChannelAllMessage(UUID channelId) {
+        if (channelId == null) {
             throw new IllegalArgumentException("채널 정보가 없습니다.");
         }
-        return messageRepository.findAllByChannelId(channels);
+        return messageRepository.findAllByChannelId(channelId);
     }
 
     @Transactional

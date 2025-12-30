@@ -81,7 +81,7 @@ public class BasicBinaryContentService implements BinaryContentService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<BinaryContentResponseDto> findByChannelId(Channel channelId) {
+    public List<BinaryContentResponseDto> findByChannelId(UUID channelId) {
         List<Message> messages = messageRepository.findByChannelId(channelId);
 
         List<UUID> attachmentIds = messages.stream()

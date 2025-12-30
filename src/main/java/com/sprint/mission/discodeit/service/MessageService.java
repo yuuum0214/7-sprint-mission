@@ -17,9 +17,9 @@ public interface MessageService {
 
     Message findByMessage(UUID uuid); //메시지 조회
 
-    List<Message> findUserAllMessage(User users); //유저 관련 전체 메시지 조회
+    List<Message> findUserAllMessage(UUID userId); //유저 관련 전체 메시지 조회
 
-    List<Message> findChannelAllMessage(Channel channels); // 채널 관련 전체 메시지 조회
+    List<Message> findChannelAllMessage(UUID channeId); // 채널 관련 전체 메시지 조회
 
     Message updateMessage(MessageUpdateRequestDto messageUpdateRequestDto);
 //                          List<MultipartFile> files); //수정

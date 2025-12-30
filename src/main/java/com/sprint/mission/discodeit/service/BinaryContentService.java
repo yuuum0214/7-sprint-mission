@@ -15,7 +15,7 @@ public interface BinaryContentService {
 
     List<BinaryContentResponseDto> findByUserId(UUID userId);
 
-    List<BinaryContentResponseDto> findByChannelId(Channel channelId);
+    List<BinaryContentResponseDto> findByChannelId(UUID channelId);
 
     void delete(UUID uuid);
 

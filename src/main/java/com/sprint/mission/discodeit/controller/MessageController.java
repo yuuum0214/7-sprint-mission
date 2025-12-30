@@ -71,7 +71,7 @@ public class MessageController implements MessageApi {
             @RequestParam UUID channelId) {
         var channel = channelRepository.findById(channelId)
                 .orElseThrow(() -> new IllegalArgumentException("채널을 찾을 수 없습니다."));
-        return messageService.findChannelAllMessage(channel)
+        return messageService.findChannelAllMessage(channelId)
                 .stream().map(MessageResponseDto::from)
                 .toList();
     }

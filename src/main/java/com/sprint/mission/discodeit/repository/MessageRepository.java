@@ -18,9 +18,9 @@ public interface MessageRepository extends JpaRepository<Message, UUID> {
 
     //메시지 전체 조회 : findAll
 
-    List<Message> findAllByChannelId(Channel channel); // 채널관련 메시지 전체조회
+    List<Message> findAllByChannelId(UUID channelId); // 채널관련 메시지 전체조회
 
-    List<Message> findByChannelId(Channel channel); // 채널에 속한 메시지의 파일 확인
+    List<Message> findByChannelId(UUID channelId); // 채널에 속한 메시지의 파일 확인
 
     Optional<Instant> findLastByChannel(Channel channel); // 가장 마지막에 온 메시지
 

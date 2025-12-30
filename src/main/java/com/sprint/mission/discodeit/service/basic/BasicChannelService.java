@@ -75,16 +75,16 @@ public class BasicChannelService implements ChannelService {
 
     @Transactional(readOnly = true)
     @Override
-    public ChannelUpdateResponseDto findById(Channel channelId) {
-        Channel channel = channelRepository.findById(channelId.getId())
+    public ChannelUpdateResponseDto findById(UUID channelId) {
+        Channel channel = channelRepository.findById(channelId)
                 .orElseThrow(() -> new IllegalArgumentException("채널을 찾을 수 없습니다."));
         //가장 최근 메시지 시간 정보 포함
-        Instant lastMessageAt = messageRepository.findLastByChannel(channelId).orElse(null);
+        Instant lastMessageAt = messageRepository.findLastByChannel(channel).orElse(null);
 
         //PRIVATE의 경우 참여한 user id 포함
         List<UUID> participantIds = null;
         if (channel.getType() == ChannelType.PRIVATE) {
-            participantIds = readStatusRepository.findByChannelId(channelId).stream()
+            participantIds = readStatusRepository.findById(channelId).stream()
                     .map(rs->rs.getUser().getId())
                     .collect(Collectors.toList());
         }
