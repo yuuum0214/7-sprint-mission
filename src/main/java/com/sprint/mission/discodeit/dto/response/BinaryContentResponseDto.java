@@ -15,12 +15,12 @@ public class BinaryContentResponseDto {
 
     private UUID id;
     private String fileName;
-    private String contentType;
     private long size;
+    private String contentType;
 
-    @Schema(type = "string", format = "byte")
-    private String bytes;
-    private Instant createdAt;
+//    @Schema(type = "string", format = "byte")
+//    private String bytes;
+//    private Instant createdAt;
 
     public static BinaryContentResponseDto from(BinaryContent binaryContent) {
         return BinaryContentResponseDto.builder()
@@ -28,8 +28,8 @@ public class BinaryContentResponseDto {
                 .contentType(binaryContent.getContentType())
                 .fileName(binaryContent.getFileName())
                 .size(binaryContent.getSize())
-//                .bytes(Base64.getEncoder().encodeToString(binaryContent.getSize()))
-                .createdAt(binaryContent.getCreatedAt())
+////                .bytes(Base64.getEncoder().encodeToString(binaryContent.getSize()))
+//                .createdAt(binaryContent.getCreatedAt())
                 .build();
     }
 }

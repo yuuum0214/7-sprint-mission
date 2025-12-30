@@ -17,15 +17,15 @@ public class UserResponseDto {
     private UUID id;
     private String username;
     private String email;
-    private Boolean isOnline;
     private BinaryContentResponseDto profile;
+    private Boolean online;
 
     public static UserResponseDto from(User user, UserStatus userStatus, BinaryContent binaryContent) {
         return UserResponseDto.builder()
                 .id(user.getId())
                 .username(user.getUserName())
                 .email(user.getEmail())
-                .isOnline(userStatus != null && userStatus.isOnline())
+                .online(userStatus != null && userStatus.isOnline())
                 .profile(binaryContent != null
                         ? BinaryContentResponseDto.from(binaryContent) : null)
                 .build();

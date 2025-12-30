@@ -1,15 +1,21 @@
 package com.sprint.mission.discodeit.dto.request;
 
-import lombok.AllArgsConstructor;
+import com.sprint.mission.discodeit.entity.User;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter @Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
+@Builder
 public class UserCreateRequestDto {
+    private String username;
     private String email;
     private String password;
-    private String username;
+
+    public static UserCreateRequestDto from(User user){
+        return UserCreateRequestDto.builder()
+                .username(user.getUserName())
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .build();
+    }
 }
