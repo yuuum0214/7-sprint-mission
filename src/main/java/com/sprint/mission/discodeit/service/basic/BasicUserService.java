@@ -105,31 +105,31 @@ public class BasicUserService implements UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        if (userUpdateRequestDto.getUserName() != null && !userUpdateRequestDto.getUserName().isBlank()) {
-            user.setUserName(userUpdateRequestDto.getUserName());
+        if (userUpdateRequestDto.getNewUsername() != null && !userUpdateRequestDto.getNewUsername().isBlank()) {
+            user.setUserName(userUpdateRequestDto.getNewUsername());
         }
-        if (userUpdateRequestDto.getEmail() != null && !userUpdateRequestDto.getEmail().isBlank()) {
-            user.setEmail(userUpdateRequestDto.getEmail());
+        if (userUpdateRequestDto.getNewEmail() != null && !userUpdateRequestDto.getNewEmail().isBlank()) {
+            user.setEmail(userUpdateRequestDto.getNewEmail());
         }
         if (userUpdateRequestDto.getNewPassword() != null && !userUpdateRequestDto.getNewPassword().isBlank()) {
             user.setPassword(userUpdateRequestDto.getNewPassword());
         }
 
         // 프로필 이미지 교체
-        if (userUpdateRequestDto.getProfileImage() != null
-                && !userUpdateRequestDto.getProfileImage().isEmpty()) {
-            try {
-                BinaryContent newProfile = new BinaryContent(
-                        userUpdateRequestDto.getProfileImage().getOriginalFilename(),
-                        userUpdateRequestDto.getProfileImage().getSize(),
-                        userUpdateRequestDto.getProfileImage().getContentType()
-//                        userUpdateRequestDto.getProfileImage().getBytes()
-                );
-                user.changeProfile(newProfile);
-            } catch (Exception e) {
-                throw new RuntimeException("프로필 업로드 중 오류 발생" + e.getMessage());
-            }
-        }
+//        if (userUpdateRequestDto.getProfileImage() != null
+//                && !userUpdateRequestDto.getProfileImage().isEmpty()) {
+//            try {
+//                BinaryContent newProfile = new BinaryContent(
+//                        userUpdateRequestDto.getProfileImage().getOriginalFilename(),
+//                        userUpdateRequestDto.getProfileImage().getSize(),
+//                        userUpdateRequestDto.getProfileImage().getContentType()
+////                        userUpdateRequestDto.getProfileImage().getBytes()
+//                );
+//                user.changeProfile(newProfile);
+//            } catch (Exception e) {
+//                throw new RuntimeException("프로필 업로드 중 오류 발생" + e.getMessage());
+//            }
+//        }
         System.out.println("[User 수정 완료] : " + user.getId());
     }
 
