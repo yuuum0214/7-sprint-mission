@@ -29,15 +29,15 @@ public class BasicReadStatusService implements ReadStatusService {
     @Override
     public ReadStatusDto create(ReadStatusCreateRequestDto readStatusCreateRequestDto) {
         ReadStatus existing = readStatusRepository.findByUserIdAndChannelId(
-                readStatusCreateRequestDto.getUser().getId(),
-                readStatusCreateRequestDto.getChannel().getId()
+                readStatusCreateRequestDto.getUserId(),
+                readStatusCreateRequestDto.getChannelId()
         );
         if (existing != null) throw new IllegalArgumentException("ReadStatus already exists");
 
-        User user = userRepository.findById(readStatusCreateRequestDto.getUser().getId())
+        User user = userRepository.findById(readStatusCreateRequestDto.getUserId())
                 .orElseThrow(()->new IllegalArgumentException("User not found"));
 
-        Channel channel = channelRepository.findById(readStatusCreateRequestDto.getChannel().getId())
+        Channel channel = channelRepository.findById(readStatusCreateRequestDto.getChannelId())
                 .orElseThrow(() -> new IllegalArgumentException("Channel not found"));
 
         ReadStatus readStatus = new ReadStatus(user, channel);
@@ -68,8 +68,8 @@ public class BasicReadStatusService implements ReadStatusService {
 
     @Transactional
     @Override
-    public ReadStatusDto update(ReadStatusUpdateRequestDto readStatusUpdateRequestDto) {
-        ReadStatus readStatus = readStatusRepository.findById(readStatusUpdateRequestDto.getId())
+    public ReadStatusDto update(UUID id, ReadStatusUpdateRequestDto readStatusUpdateRequestDto) {
+        ReadStatus readStatus = readStatusRepository.findById(id)
                 .orElseThrow(()->new IllegalArgumentException("ReadStatus not found"));
 
         if (readStatusUpdateRequestDto.getNewLastReadAt() != null

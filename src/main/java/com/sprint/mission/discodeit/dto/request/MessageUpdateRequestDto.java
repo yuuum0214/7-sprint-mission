@@ -5,12 +5,9 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import java.util.UUID;
-
 @Getter
 @Setter
 @RequiredArgsConstructor
 public class MessageUpdateRequestDto {
-    private Message messageId;
-    private String content;
+    private String newContent;
 }

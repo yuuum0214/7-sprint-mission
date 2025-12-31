@@ -12,18 +12,22 @@ import java.util.UUID;
 @Builder
 public class MessageResponseDto {
     private UUID id; //messageId;
-    private String content;
-    private UUID authorId; //userId;
-    private UUID channelId;
-    private List<UUID> attachmentIds;
     private Instant createdAt;
     private Instant updatedAt;
+    private String content;
+    private UUID channelId;
+    private UserResponseDto author; //userId;
+    private List<UUID> attachmentIds;
 
     public static MessageResponseDto from (Message message){
         return MessageResponseDto.builder()
                 .id(message.getId())
                 .content(message.getContent())
-                .authorId(message.getAuthor().getId())
+                .author(UserResponseDto.from(
+                        message.getAuthor(),
+                        message.getAuthor().getUserStatus(),
+                        message.getAuthor().getProfile()
+                ))
                 .channelId(message.getChannel().getId())
                 .attachmentIds(message.getAttachments().stream().map(BinaryContent::getId).toList())
                 .createdAt(message.getCreatedAt())

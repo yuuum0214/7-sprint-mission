@@ -46,13 +46,13 @@ public class MessageController implements MessageApi {
     @PatchMapping(value = "/{messageId}") //, consumes = "multipart/form-data")
     public MessageResponseDto updateMessage(
             @Parameter(description = "수정할 Message ID")
-            @PathVariable Message messageId
+            @PathVariable UUID messageId
 //            @RequestParam String newContent
             /*@RequestPart(value = "file", required = false) List<MultipartFile> files*/) {
         MessageUpdateRequestDto dto = new MessageUpdateRequestDto();
-        dto.setMessageId(messageId);
+//        dto.setMessageId(messageId);
 //        dto.setContent(newContent);
-        var updateMessage = messageService.updateMessage(dto); //, files);
+        var updateMessage = messageService.updateMessage(messageId, dto); //, files);
         return MessageResponseDto.from(updateMessage);
     }
 

@@ -41,29 +41,27 @@ public class BasicMessageService implements MessageService {
     @Override
     public Message createMessage(MessageCreateRequestDto messageCreateRequestDto,
                                  List<MultipartFile> files) {
-        channelRepository.findById(messageCreateRequestDto.getChannel().getId())
+        Channel channel = channelRepository.findById(messageCreateRequestDto.getChannelId())
                 .orElseThrow(() -> new IllegalStateException("채널정보를 찾을 수 없습니다."));
-        if (userRepository.findById(messageCreateRequestDto.getAuthor().getId()) == null)
-            throw new IllegalStateException("작성자가 없습니다.");
 
-        List<UUID> attachmentIds = new ArrayList<>();
+        User user = userRepository.findById(messageCreateRequestDto.getAuthorId())
+                .orElseThrow(() -> new IllegalStateException("작성자가 없습니다."));
+
+        List<BinaryContent> attachments = new ArrayList<>();
         if (files != null && !files.isEmpty()) {
             for (MultipartFile file : files) {
                 if (file == null || file.isEmpty()) continue;
-                BinaryContent saved;
-                    saved = binaryContentRepository.save(
-                            new BinaryContent(file.getOriginalFilename(), file.getSize(), file.getContentType() ));
-                    attachmentIds.add(saved.getId());
+                BinaryContent saved = binaryContentRepository.save(
+                        new BinaryContent(file.getOriginalFilename(), file.getSize(), file.getContentType()));
+                attachments.add(saved);
             }
         }
 
-        Channel channel;
-
         Message message = new Message(
-                messageCreateRequestDto.getChannel(),
-                messageCreateRequestDto.getAuthor(),
+                channel,
+                user,
                 messageCreateRequestDto.getContent(),
-                messageCreateRequestDto.getAttachmentIds()
+                attachments
         );
         return messageRepository.save(message);
     }
@@ -99,11 +97,11 @@ public class BasicMessageService implements MessageService {
 
     @Transactional
     @Override
-    public Message updateMessage(MessageUpdateRequestDto messageUpdateRequestDto){
-        Message message = messageRepository.findById(messageUpdateRequestDto.getMessageId().getId())
+    public Message updateMessage(UUID messageId, MessageUpdateRequestDto messageUpdateRequestDto) {
+        Message message = messageRepository.findById(messageId)
                 .orElseThrow(() -> new IllegalArgumentException("수정할 메시지를 찾을 수 없습니다."));
 
-        message.setUpdate(messageUpdateRequestDto.getContent());
+        message.setUpdate(messageUpdateRequestDto.getNewContent());
 
         List<BinaryContent> attachments = message.getAttachments() != null
                 ? new ArrayList<>(message.getAttachments())
