@@ -36,7 +36,7 @@ public class BasicChannelService implements ChannelService {
 
     @Transactional
     @Override
-    public ChannelUpdateResponseDto createPublicChannel(ChannelPublicCreateRequestDto channelPublicCreateRequestDto) {
+    public Channel createPublicChannel(ChannelPublicCreateRequestDto channelPublicCreateRequestDto) {
         if (channelPublicCreateRequestDto.getName() == null
                 || channelPublicCreateRequestDto.getName().isBlank()) {
             throw new IllegalStateException("채널 이름이 필요합니다.");
@@ -45,32 +45,59 @@ public class BasicChannelService implements ChannelService {
         Channel channel = new Channel(channelPublicCreateRequestDto.getName(), PUBLIC, channelPublicCreateRequestDto.getDescription());
         channelRepository.save(channel);
 
-        return ChannelUpdateResponseDto.from(channel);
+        return channelRepository.save(channel);
     }
 
     @Transactional
     @Override
-    public ChannelUpdateResponseDto createPrivateChannel(ChannelPrivateCreateRequestDto channelPrivateCreateRequestDto) {
+    public Channel createPrivateChannel(ChannelPrivateCreateRequestDto channelPrivateCreateRequestDto) {
         List<UUID> participantIds = channelPrivateCreateRequestDto.getParticipantIds();
         if (participantIds == null || participantIds.size() <= 1) {
             throw new IllegalStateException("2명 이상의 참여 유저가 있어야 합니다.");
         }
         Channel channel = new Channel(PRIVATE);
-        channelRepository.save(channel);
+        channel = channelRepository.save(channel);
 
         //유저별 ReadStatus 생성
         for (UUID userId : participantIds) {
             User user =  userRepository.findById(userId)
                     .orElseThrow(()->new IllegalArgumentException("존재하지 않는 유저입니다"));
             ReadStatus readStatus = new ReadStatus(user, channel);
+            channel.getReadStatuses().add(readStatus);
             readStatusRepository.save(readStatus);
         }
-        return ChannelUpdateResponseDto.from(channel);
+        return channelRepository.save(channel);
     }
 
+    @Transactional
     @Override
     public List<ChannelResponseDto> findAllByUserId(UUID userId) {
-        return List.of();
+        List<Channel> channels = channelRepository.findAll().stream()
+                .filter(channel -> {
+                    if(channel.getType().equals(PUBLIC)) {
+                        return true;
+                    }
+                    if(channel.getType().equals(PRIVATE)) {
+                        return channel.getReadStatuses().stream()
+                                .anyMatch(rs->rs.getUser().getId().equals(userId));
+                    }
+                    return false;
+                })
+                .toList();
+
+        return channels.stream()
+                .map(ChannelResponseDto::from)
+                .toList();
+    }
+
+    @Transactional
+    @Override
+    public List<ChannelResponseDto> findAll() {
+        List<Channel> channels = channelRepository.findAllWithParticipants();
+
+        return channels.stream()
+                .map(ChannelResponseDto::from)
+                .toList();
     }
 
     @Transactional(readOnly = true)
@@ -86,25 +113,11 @@ public class BasicChannelService implements ChannelService {
         if (channel.getType() == ChannelType.PRIVATE) {
             participantIds = readStatusRepository.findById(channelId).stream()
                     .map(rs->rs.getUser().getId())
-                    .collect(Collectors.toList());
+                    .toList();
         }
 
         return ChannelUpdateResponseDto.from(channel);
     }
-
-//    @Transactional(readOnly = true)
-//    @Override
-//    public List<ChannelResponseDto> findAllByUserId(UUID userId) {
-//        return channelRepository.findAll().stream()
-//                .filter(c -> c.getType() == PUBLIC
-//                        || (c.getType() == PRIVATE && c.getParticipantIds().contains(userId)))
-//                .map(c -> {
-//                    Instant lastMessageAt = messageRepository.findLastByChannel(c.getId()).orElse(null);
-//                    List<UUID> participantIds = (c.getType() == PRIVATE) ? c.getParticipantIds() : null;
-//                    return ChannelResponseDto.from(c, lastMessageAt, participantIds);
-//                })
-//                .collect(Collectors.toList());
-//    }
 
     @Transactional
     @Override

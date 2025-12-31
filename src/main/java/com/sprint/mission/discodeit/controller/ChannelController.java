@@ -5,14 +5,10 @@ import com.sprint.mission.discodeit.dto.request.ChannelPrivateCreateRequestDto;
 import com.sprint.mission.discodeit.dto.request.ChannelPublicCreateRequestDto;
 import com.sprint.mission.discodeit.dto.request.ChannelUpdateRequestDto;
 import com.sprint.mission.discodeit.dto.response.ChannelResponseDto;
+import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.service.ChannelService;
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import io.swagger.v3.oas.annotations.tags.Tags;
-import jdk.jfr.Description;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -32,16 +28,19 @@ public class ChannelController implements ChannelApi {
 
     // 공개 채널 생성
     @PostMapping("/public")
-    public ResponseEntity<Void> createPublicChannel(@RequestBody ChannelPublicCreateRequestDto channelPublicCreateRequestDto) {
-        channelService.createPublicChannel(channelPublicCreateRequestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<ChannelResponseDto> createPublicChannel(
+            @RequestBody ChannelPublicCreateRequestDto channelPublicCreateRequestDto) {
+        Channel channel = channelService.createPublicChannel(channelPublicCreateRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ChannelResponseDto.from(channel));
     }
 
     // 비공개 채널 생성
     @PostMapping("/private")
-    public ResponseEntity<Void> createPrivateChannel(@RequestBody ChannelPrivateCreateRequestDto channelPrivateCreateRequestDto) {
-        channelService.createPrivateChannel(channelPrivateCreateRequestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<ChannelResponseDto> createPrivateChannel(@RequestBody ChannelPrivateCreateRequestDto channelPrivateCreateRequestDto) {
+        Channel channel = channelService.createPrivateChannel(channelPrivateCreateRequestDto);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ChannelResponseDto.from(channel));
     }
 
     // 공개 채널 정보 수정
@@ -66,7 +65,11 @@ public class ChannelController implements ChannelApi {
     @GetMapping
     public List<ChannelResponseDto> getChannel(
             @Parameter(description = "조회할 User ID")
-            @RequestParam UUID userId) {
-        return channelService.findAllByUserId(userId);
+            @RequestParam(required = false) UUID userId) {
+        if(userId != null){
+            return channelService.findAllByUserId(userId);
+        } else {
+            return channelService.findAll();
+        }
     }
 }

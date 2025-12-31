@@ -33,7 +33,7 @@ public interface ChannelApi {
                     )
             )
     })
-    public ResponseEntity<Void> createPublicChannel(
+    public ResponseEntity<ChannelResponseDto> createPublicChannel(
             @RequestBody ChannelPublicCreateRequestDto channelPublicCreateRequestDto
     );
 
@@ -48,7 +48,7 @@ public interface ChannelApi {
                     )
             )
     })
-    public ResponseEntity<Void> createPrivateChannel(
+    public ResponseEntity<ChannelResponseDto> createPrivateChannel(
             @RequestBody ChannelPrivateCreateRequestDto channelPrivateCreateRequestDto
     );
 

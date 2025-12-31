@@ -31,10 +31,6 @@ public class Channel extends BaseUpdatableEntity {
     @OneToMany(mappedBy = "channel", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Message> messages = new ArrayList<>();
 
-//    // N:M 관계
-//    @ManyToMany(mappedBy = "channels")
-//    private List<User> member;
-
     // 1:N 관계
     @OneToMany(mappedBy = "channel", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReadStatus> readStatuses = new ArrayList<>();

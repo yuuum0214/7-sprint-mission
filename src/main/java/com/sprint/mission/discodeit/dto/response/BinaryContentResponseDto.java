@@ -1,12 +1,9 @@
 package com.sprint.mission.discodeit.dto.response;
 
 import com.sprint.mission.discodeit.entity.BinaryContent;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.Instant;
-import java.util.Base64;
 import java.util.UUID;
 
 @Getter
@@ -17,10 +14,6 @@ public class BinaryContentResponseDto {
     private String fileName;
     private long size;
     private String contentType;
-
-//    @Schema(type = "string", format = "byte")
-//    private String bytes;
-//    private Instant createdAt;
 
     public static BinaryContentResponseDto from(BinaryContent binaryContent) {
         return BinaryContentResponseDto.builder()
