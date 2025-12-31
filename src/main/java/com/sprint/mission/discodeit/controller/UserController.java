@@ -47,10 +47,13 @@ public class UserController implements UserApi {
 
     //사용자 수정
     @PatchMapping(value = "/{userId}", consumes = "multipart/form-data")
-    public void update(
+    public ResponseEntity<UserResponseDto> update(
             @Parameter(description = "수정할 User ID")
-            @PathVariable UUID userId, @ModelAttribute UserUpdateRequestDto userUpdateRequestDto) {
-        userService.updateUser(userId, userUpdateRequestDto);
+            @PathVariable UUID userId,
+            @RequestPart("userUpdateRequest") UserUpdateRequestDto userUpdateRequestDto,
+            @RequestPart(value = "profile", required = false) MultipartFile profile) {
+        UserResponseDto updatedUser = userService.updateUser(userId, userUpdateRequestDto, profile);
+        return ResponseEntity.ok(updatedUser);
     }
 
     //접속 상태 반영

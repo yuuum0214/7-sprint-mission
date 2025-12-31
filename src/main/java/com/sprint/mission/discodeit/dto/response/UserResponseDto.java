@@ -3,15 +3,12 @@ package com.sprint.mission.discodeit.dto.response;
 import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.Instant;
 import java.util.UUID;
 
 @Getter
-@AllArgsConstructor
 @Builder
 public class UserResponseDto {
     private UUID id;

@@ -3,6 +3,7 @@ package com.sprint.mission.discodeit.service;
 import com.sprint.mission.discodeit.dto.request.UserCreateRequestDto;
 import com.sprint.mission.discodeit.dto.request.UserUpdateRequestDto;
 import com.sprint.mission.discodeit.dto.response.UserResponseDto;
+import com.sprint.mission.discodeit.entity.User;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public interface UserService {
 //    List<User> readAllUser(); //모든 User조회
     List<UserResponseDto> findAllUser(); //모든 User조회
 
-    void updateUser(UUID userId, UserUpdateRequestDto userUpdateRequestDto); //User 정보 수정
+    UserResponseDto updateUser(UUID userId, UserUpdateRequestDto userUpdateRequestDto, MultipartFile profile); //User 정보 수정
     //update하나로 통일. String~을 dto로 전환
 //    void updatePassword(UUID uuid, String newPassword); //User 정보 수정
 

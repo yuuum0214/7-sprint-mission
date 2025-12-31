@@ -55,7 +55,6 @@ public class BasicUserService implements UserService {
                         file.getOriginalFilename(),
                         file.getSize(),
                         file.getContentType()
-//                        userCreateRequest.getProfile().getBytes()
                 );
                 user.changeProfile(profile);
                 binaryContentRepository.save(profile);
@@ -71,7 +70,7 @@ public class BasicUserService implements UserService {
 
         // 상태 생성, 저장
         UserStatus userStatus = new UserStatus(savedUser);
-        savedUser.changeStatus(userStatus); // TODO: setUstate 를 리펙토링할것
+        savedUser.changeStatus(userStatus); // TODO: setUserState 를 리펙토링할것
 
         userStatusRepository.save(userStatus);
 
@@ -101,7 +100,7 @@ public class BasicUserService implements UserService {
 
     @Transactional
     @Override
-    public void updateUser(UUID userId, UserUpdateRequestDto userUpdateRequestDto) {
+    public UserResponseDto updateUser(UUID userId, UserUpdateRequestDto userUpdateRequestDto, MultipartFile profile) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
@@ -116,21 +115,20 @@ public class BasicUserService implements UserService {
         }
 
         // 프로필 이미지 교체
-//        if (userUpdateRequestDto.getProfileImage() != null
-//                && !userUpdateRequestDto.getProfileImage().isEmpty()) {
-//            try {
-//                BinaryContent newProfile = new BinaryContent(
-//                        userUpdateRequestDto.getProfileImage().getOriginalFilename(),
-//                        userUpdateRequestDto.getProfileImage().getSize(),
-//                        userUpdateRequestDto.getProfileImage().getContentType()
-////                        userUpdateRequestDto.getProfileImage().getBytes()
-//                );
-//                user.changeProfile(newProfile);
-//            } catch (Exception e) {
-//                throw new RuntimeException("프로필 업로드 중 오류 발생" + e.getMessage());
-//            }
-//        }
-        System.out.println("[User 수정 완료] : " + user.getId());
+        if (profile != null && !profile.isEmpty()) {
+            try {
+                BinaryContent newProfile = new BinaryContent(
+                        profile.getOriginalFilename(),
+                        profile.getSize(),
+                        profile.getContentType()
+                );
+                user.changeProfile(newProfile);
+            } catch (Exception e) {
+                throw new RuntimeException("프로필 업로드 중 오류 발생" + e.getMessage());
+            }
+        }
+
+        return UserResponseDto.from(userRepository.save(user), user.getUserStatus(), user.getProfile());
     }
 
     @Transactional

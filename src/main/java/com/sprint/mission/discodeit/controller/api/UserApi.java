@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -80,9 +81,11 @@ public interface UserApi {
                     )
             )
     })
-    public void update(
+    public ResponseEntity<UserResponseDto> update(
             @Parameter(description = "수정할 User ID")
-            @PathVariable UUID userId, @ModelAttribute UserUpdateRequestDto userUpdateRequestDto);
+            @PathVariable UUID userId,
+            @RequestPart UserUpdateRequestDto userUpdateRequestDto,
+            @RequestPart(value = "profile", required = false) MultipartFile profile);
 
     //사용자 삭제
     @Operation(summary = "User 삭제")
