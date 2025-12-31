@@ -15,9 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Schema(description = "수정할 읽음 상태 정보")
 public class ReadStatusUpdateRequestDto {
-    private UUID id; //uuid;
     private Instant newLastReadAt; //lastReadAt;
-//    private Instant updatedAt;
 
 
     public void setNewLastReadAt(Instant newLastReadAt) {
