@@ -21,8 +21,6 @@ public class BinaryContentResponseDto {
                 .contentType(binaryContent.getContentType())
                 .fileName(binaryContent.getFileName())
                 .size(binaryContent.getSize())
-////                .bytes(Base64.getEncoder().encodeToString(binaryContent.getSize()))
-//                .createdAt(binaryContent.getCreatedAt())
                 .build();
     }
 }
