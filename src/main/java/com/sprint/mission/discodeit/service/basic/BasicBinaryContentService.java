@@ -10,6 +10,7 @@ import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import com.sprint.mission.discodeit.repository.MessageRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.service.BinaryContentService;
+import com.sprint.mission.discodeit.storage.BinaryContentStorage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +26,7 @@ public class BasicBinaryContentService implements BinaryContentService {
     private final UserRepository userRepository;
     private final MessageRepository messageRepository;
     private final BinaryContentMapper binaryContentMapper;
+    private final BinaryContentStorage binaryContentStorage;
 
     @Transactional
     @Override
@@ -34,8 +36,11 @@ public class BasicBinaryContentService implements BinaryContentService {
                 (long) binaryContentCreateRequestDto.getBytes().length,
                 binaryContentCreateRequestDto.getContentType()
         );
-        binaryContentRepository.save(binaryContent);
-        return binaryContentMapper.toDto(binaryContent);
+        BinaryContent saved = binaryContentRepository.save(binaryContent);
+
+        binaryContentStorage.put(saved.getId(), binaryContentCreateRequestDto.getBytes());
+
+        return binaryContentMapper.toDto(saved);
     }
 
     @Transactional(readOnly = true)
@@ -43,9 +48,6 @@ public class BasicBinaryContentService implements BinaryContentService {
     public BinaryContentResponseDto find(UUID uuid) {
         BinaryContent binaryContent = binaryContentRepository.findById(uuid)
                 .orElseThrow(()->new IllegalArgumentException("BinaryContent를 찾을 수 없습니다."));
-        if (binaryContent == null) {
-            throw new RuntimeException("Binary content를 찾을 수 없음");
-        }
         return binaryContentMapper.toDto(binaryContent);
     }
 
@@ -55,15 +57,10 @@ public class BasicBinaryContentService implements BinaryContentService {
         User user = userRepository.findById(userId)
                 .orElseThrow(()->new IllegalArgumentException("User not found"));
         UUID profileId = user.getProfile().getId();
-
         if(profileId==null){
             return List.of();
         }
-        BinaryContent binaryContent = binaryContentRepository.findById(profileId)
-                .orElseThrow(()->new IllegalArgumentException("BinaryContent를 찾을 수 없습니다."));
-        if(binaryContent==null){
-            return List.of();
-        }
+        BinaryContent binaryContent = user.getProfile();
 
         return List.of(binaryContentMapper.toDto(binaryContent));
     }
@@ -96,8 +93,6 @@ public class BasicBinaryContentService implements BinaryContentService {
                 .map(binaryContentMapper::toDto)
                 .toList();
     }
-
-
 
     @Transactional
     @Override

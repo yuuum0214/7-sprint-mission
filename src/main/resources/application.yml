@@ -16,3 +16,9 @@ spring:
 logging:
   level:
     root: info
+
+discodeit:
+  storage:
+    type: local
+    local:
+      root-path: .discodeit/storage

@@ -11,6 +11,7 @@ import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.repository.UserStatusRepository;
 import com.sprint.mission.discodeit.service.UserService;
+import com.sprint.mission.discodeit.storage.BinaryContentStorage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ public class BasicUserService implements UserService {
     private final UserStatusRepository userStatusRepository;
     private final BinaryContentRepository binaryContentRepository;
     private final UserMapper userMapper;
+    private final BinaryContentStorage binaryContentStorage;
 
     @Transactional
     @Override
@@ -50,15 +52,18 @@ public class BasicUserService implements UserService {
 
         //프로필 이미지 등록(선택)
         if (file != null && !file.isEmpty()) {
-            System.out.println("file!!!!! :  " + file.getName());
             try {
                 BinaryContent profile = new BinaryContent(
                         file.getOriginalFilename(),
                         file.getSize(),
                         file.getContentType()
                 );
-                user.changeProfile(profile);
-                binaryContentRepository.save(profile);
+                BinaryContent saved = binaryContentRepository.save(profile);
+
+                binaryContentStorage.put(saved.getId(), file.getBytes());
+
+                user.changeProfile(saved);
+
             } catch (Exception e) {
                 throw new RuntimeException("프로필 처리 중 ERROR", e);
             }
@@ -119,13 +124,17 @@ public class BasicUserService implements UserService {
                         profile.getSize(),
                         profile.getContentType()
                 );
-                user.changeProfile(newProfile);
+                BinaryContent updatedProfile = binaryContentRepository.save(newProfile);
+
+                binaryContentStorage.put(updatedProfile.getId(), profile.getBytes());
+
+                user.changeProfile(updatedProfile);
+
             } catch (Exception e) {
                 throw new RuntimeException("프로필 업로드 중 오류 발생" + e.getMessage());
             }
         }
         User saved = userRepository.save(user);
-
         return userMapper.toDto(saved);
     }
 
