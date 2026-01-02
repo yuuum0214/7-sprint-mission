@@ -1,15 +1,12 @@
 package com.sprint.mission.discodeit.dto.response;
 
 import com.sprint.mission.discodeit.entity.User;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.time.Instant;
 import java.util.UUID;
 
 @Getter
-@AllArgsConstructor
 @Builder
 public class LoginResponseDto {
 //    private final String id;

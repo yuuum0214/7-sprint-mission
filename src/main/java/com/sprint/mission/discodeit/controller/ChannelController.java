@@ -30,17 +30,17 @@ public class ChannelController implements ChannelApi {
     @PostMapping("/public")
     public ResponseEntity<ChannelResponseDto> createPublicChannel(
             @RequestBody ChannelPublicCreateRequestDto channelPublicCreateRequestDto) {
-        Channel channel = channelService.createPublicChannel(channelPublicCreateRequestDto);
+//        Channel channel = channelService.createPublicChannel(channelPublicCreateRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ChannelResponseDto.from(channel));
+                .body(channelService.createPublicChannel(channelPublicCreateRequestDto));
     }
 
     // 비공개 채널 생성
     @PostMapping("/private")
     public ResponseEntity<ChannelResponseDto> createPrivateChannel(@RequestBody ChannelPrivateCreateRequestDto channelPrivateCreateRequestDto) {
-        Channel channel = channelService.createPrivateChannel(channelPrivateCreateRequestDto);
+//        Channel channel = channelService.createPrivateChannel(channelPrivateCreateRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ChannelResponseDto.from(channel));
+                .body(channelService.createPrivateChannel(channelPrivateCreateRequestDto));
     }
 
     // 공개 채널 정보 수정
