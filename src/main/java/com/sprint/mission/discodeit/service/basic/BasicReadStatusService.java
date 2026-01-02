@@ -6,6 +6,7 @@ import com.sprint.mission.discodeit.dto.response.ReadStatusDto;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.ReadStatus;
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.mapper.ReadStatusMapper;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
 import com.sprint.mission.discodeit.repository.ReadStatusRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
@@ -24,6 +25,7 @@ public class BasicReadStatusService implements ReadStatusService {
     private final ReadStatusRepository readStatusRepository;
     private final UserRepository userRepository;
     private final ChannelRepository channelRepository;
+    private final ReadStatusMapper readStatusMapper;
 
     @Transactional
     @Override
@@ -43,7 +45,7 @@ public class BasicReadStatusService implements ReadStatusService {
         ReadStatus readStatus = new ReadStatus(user, channel);
         readStatusRepository.save(readStatus);
 
-        return ReadStatusDto.from(readStatus);
+        return readStatusMapper.toDto(readStatus);
     }
 
     @Transactional(readOnly = true)
@@ -52,7 +54,7 @@ public class BasicReadStatusService implements ReadStatusService {
         ReadStatus readStatus = readStatusRepository.findById(uuid)
                 .orElseThrow(()->new IllegalArgumentException("ReadStatus를 찾을 수 없습니다."));
         if (readStatus == null) throw new IllegalArgumentException("ReadStatus not found");
-        return ReadStatusDto.from(readStatus);
+        return readStatusMapper.toDto(readStatus);
     }
 
     @Transactional(readOnly = true)
@@ -62,7 +64,7 @@ public class BasicReadStatusService implements ReadStatusService {
                 .orElseThrow(()->new IllegalArgumentException("User not found"));
         return readStatusRepository.findByUserId(user.getId())
                 .stream()
-                .map(ReadStatusDto::from)
+                .map(readStatusMapper::toDto)
                 .collect(Collectors.toList());
     }
 
@@ -77,7 +79,8 @@ public class BasicReadStatusService implements ReadStatusService {
 
             readStatus.setUpdate(readStatusUpdateRequestDto.getNewLastReadAt());
         }
-        return ReadStatusDto.from(readStatus);
+        ReadStatus saved = readStatusRepository.save(readStatus);
+        return readStatusMapper.toDto(saved);
     }
 
     @Transactional
