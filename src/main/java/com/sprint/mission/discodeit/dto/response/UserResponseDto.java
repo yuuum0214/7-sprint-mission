@@ -20,7 +20,7 @@ public class UserResponseDto {
     public static UserResponseDto from(User user, UserStatus userStatus, BinaryContent binaryContent) {
         return UserResponseDto.builder()
                 .id(user.getId())
-                .username(user.getUserName())
+                .username(user.getUsername())
                 .email(user.getEmail())
                 .online(userStatus != null && userStatus.isOnline())
                 .profile(binaryContent != null

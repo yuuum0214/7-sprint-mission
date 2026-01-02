@@ -13,7 +13,7 @@ public class UserCreateRequestDto {
 
     public static UserCreateRequestDto from(User user){
         return UserCreateRequestDto.builder()
-                .username(user.getUserName())
+                .username(user.getUsername())
                 .email(user.getEmail())
                 .password(user.getPassword())
                 .build();

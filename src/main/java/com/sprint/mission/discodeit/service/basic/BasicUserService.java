@@ -35,7 +35,7 @@ public class BasicUserService implements UserService {
 
         //유저 생성
         if (userRepository.existsByEmail(userCreateRequest.getEmail()) ||
-                userRepository.existsByUserName(userCreateRequest.getUsername())) {
+                userRepository.existsByUsername(userCreateRequest.getUsername())) {
             throw new IllegalArgumentException("이미 존재하는 Name 혹은 Email 입니다.");
         }
 
@@ -137,7 +137,7 @@ public class BasicUserService implements UserService {
         User user = userRepository.findById(uuid)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        System.out.println("삭제 대상 : " + user.getUserName()
+        System.out.println("삭제 대상 : " + user.getUsername()
                 + " | Status : " + user.getUserStatus()
                 + " | profile : " + user.getProfile());
 

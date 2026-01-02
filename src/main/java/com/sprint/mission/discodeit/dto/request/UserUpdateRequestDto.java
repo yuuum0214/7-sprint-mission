@@ -13,7 +13,7 @@ public class UserUpdateRequestDto {
 
     public static UserUpdateRequestDto from(User user){
         return UserUpdateRequestDto.builder()
-                .newUsername(user.getUserName())
+                .newUsername(user.getUsername())
                 .newEmail(user.getEmail())
                 .newPassword(user.getPassword())
                 .build();

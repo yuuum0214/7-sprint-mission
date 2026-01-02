@@ -19,7 +19,7 @@ public class BasicAuthService implements AuthService {
     @Transactional
     @Override
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
-        User user = userRepository.findByUserName(loginRequestDto.getUsername()
+        User user = userRepository.findByUsername(loginRequestDto.getUsername()
         ).orElseThrow(() -> new IllegalArgumentException("아이디 또는 비밀번호가 일치하지 않습니다."));
 
         if(!user.getPassword().equals(loginRequestDto.getPassword())){

@@ -4,18 +4,12 @@ import com.sprint.mission.discodeit.entity.base.BaseUpdatableEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 @Entity
 @Table(name = "users")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // JPA 사용을 위한 기본 생성자 추가
 public class User extends BaseUpdatableEntity {
 
-    //    private String userId; //가입 Id
     @Column(length = 60, nullable = false)
     private String password; //비밀번호
 
@@ -23,7 +17,7 @@ public class User extends BaseUpdatableEntity {
     private String email; //이메일
 
     @Column(name = "username", length = 50, nullable = false, unique = true)
-    private String userName; //유저 이름
+    private String username; //유저 이름
 
     //    private UUID profileImageId; //프로필
     @OneToOne(fetch = FetchType.LAZY)
@@ -34,11 +28,11 @@ public class User extends BaseUpdatableEntity {
     @OneToOne(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true) // TODO: CASCADE.ALL , orphanRemoval 왜 쓰는지 공부할것! by 태언
     private UserStatus userStatus;
 
-    public User(String password, String email, String userName, BinaryContent profile) {
+    public User(String password, String email, String username, BinaryContent profile) {
         super();
         this.password = password;
         this.email = email;
-        this.userName = userName;
+        this.username = username;
         this.profile = profile;
     }
 
@@ -55,8 +49,8 @@ public class User extends BaseUpdatableEntity {
     }
 
     public void setUserName(String newUserName) {
-        if (newUserName != null && !newUserName.equals(this.userName)) {
-            this.userName = newUserName;
+        if (newUserName != null && !newUserName.equals(this.username)) {
+            this.username = newUserName;
         }
     }
 

@@ -22,7 +22,7 @@ public class LoginResponseDto {
     public static LoginResponseDto from(User user) {
         return LoginResponseDto.builder()
                 .id(user.getId())
-                .username(user.getUserName())
+                .username(user.getUsername())
                 .email(user.getEmail())
                 .online(user.getUserStatus().isOnline())
                 .profile(user.getProfile() == null ? null :
