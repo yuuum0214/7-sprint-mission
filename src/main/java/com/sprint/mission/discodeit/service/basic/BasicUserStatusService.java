@@ -2,10 +2,10 @@ package com.sprint.mission.discodeit.service.basic;
 
 import com.sprint.mission.discodeit.dto.request.UserStatusCreateRequestDto;
 import com.sprint.mission.discodeit.dto.request.UserStatusUpdateRequestDto;
-import com.sprint.mission.discodeit.dto.request.UserUpdateRequestDto;
 import com.sprint.mission.discodeit.dto.response.UserStatusResponseDto;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
+import com.sprint.mission.discodeit.mapper.UserStatusMapper;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.repository.UserStatusRepository;
 import com.sprint.mission.discodeit.service.UserStatusService;
@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +23,7 @@ public class BasicUserStatusService implements UserStatusService {
 
     private final UserRepository userRepository;
     private final UserStatusRepository userStatusRepository;
+    private final UserStatusMapper userStatusMapper;
 
     @Transactional
     @Override
@@ -38,7 +38,7 @@ public class BasicUserStatusService implements UserStatusService {
 
         UserStatus userStatus = new UserStatus(user);
         userStatusRepository.save(userStatus);
-        return UserStatusResponseDto.from(userStatus);
+        return userStatusMapper.toDto(userStatus);
     }
 
     @Transactional(readOnly = true)
@@ -46,15 +46,13 @@ public class BasicUserStatusService implements UserStatusService {
     public UserStatusResponseDto findById(UUID uuid) {
         UserStatus userStatus = userStatusRepository.findById(uuid)
                 .orElseThrow(() -> new RuntimeException("해당 UserStatus를 찾을 수 없습니다."));
-        return UserStatusResponseDto.from(userStatus);
+        return userStatusMapper.toDto(userStatus);
     }
 
     @Transactional(readOnly = true)
     @Override
     public List<UserStatusResponseDto> findAll() {
-        return userStatusRepository.findAll().stream()
-                .map(UserStatusResponseDto::from)
-                .collect(Collectors.toList());
+        return userStatusMapper.toDtoList(userStatusRepository.findAll());
     }
 
     @Transactional
@@ -67,7 +65,8 @@ public class BasicUserStatusService implements UserStatusService {
         if (userStatusUpdateRequestDto.getLastActiveAt() != null) {
             userStatus.updateLastActiveAt(userStatusUpdateRequestDto.getLastActiveAt());
         }
-        return UserStatusResponseDto.from(userStatus);
+        UserStatus saved = userStatusRepository.save(userStatus);
+        return userStatusMapper.toDto(saved);
     }
 
     @Transactional
@@ -81,7 +80,8 @@ public class BasicUserStatusService implements UserStatusService {
         if (userStatusUpdateRequestDto.getLastActiveAt() != null) {
             userStatus.updateLastActiveAt(userStatusUpdateRequestDto.getLastActiveAt());
         }
-        return UserStatusResponseDto.from(userStatus);
+        UserStatus saved = userStatusRepository.save(userStatus);
+        return userStatusMapper.toDto(saved);
     }
 
     @Transactional
