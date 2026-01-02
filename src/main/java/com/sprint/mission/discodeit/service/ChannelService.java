@@ -12,8 +12,8 @@ import java.util.UUID;
 
 public interface ChannelService {
 
-    Channel createPublicChannel(ChannelPublicCreateRequestDto channelCreateRequestDto); //채널 생성
-    Channel createPrivateChannel(ChannelPrivateCreateRequestDto channelPrivateCreateRequestDto); //채널 생성
+    ChannelResponseDto createPublicChannel(ChannelPublicCreateRequestDto channelCreateRequestDto); //채널 생성
+    ChannelResponseDto createPrivateChannel(ChannelPrivateCreateRequestDto channelPrivateCreateRequestDto); //채널 생성
 
     ChannelUpdateResponseDto findById(UUID channelId); //채널 내용 보기
 

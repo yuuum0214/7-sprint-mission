@@ -6,6 +6,7 @@ import com.sprint.mission.discodeit.dto.request.ChannelUpdateRequestDto;
 import com.sprint.mission.discodeit.dto.response.ChannelResponseDto;
 import com.sprint.mission.discodeit.dto.response.ChannelUpdateResponseDto;
 import com.sprint.mission.discodeit.entity.*;
+import com.sprint.mission.discodeit.mapper.ChannelMapper;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
 import com.sprint.mission.discodeit.repository.MessageRepository;
 import com.sprint.mission.discodeit.repository.ReadStatusRepository;
@@ -18,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.sprint.mission.discodeit.entity.ChannelType.PRIVATE;
 import static com.sprint.mission.discodeit.entity.ChannelType.PUBLIC;
@@ -33,10 +33,11 @@ public class BasicChannelService implements ChannelService {
     private final ReadStatusRepository readStatusRepository;
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
+    private final ChannelMapper channelMapper;
 
     @Transactional
     @Override
-    public Channel createPublicChannel(ChannelPublicCreateRequestDto channelPublicCreateRequestDto) {
+    public ChannelResponseDto createPublicChannel(ChannelPublicCreateRequestDto channelPublicCreateRequestDto) {
         if (channelPublicCreateRequestDto.getName() == null
                 || channelPublicCreateRequestDto.getName().isBlank()) {
             throw new IllegalStateException("채널 이름이 필요합니다.");
@@ -45,12 +46,12 @@ public class BasicChannelService implements ChannelService {
         Channel channel = new Channel(channelPublicCreateRequestDto.getName(), PUBLIC, channelPublicCreateRequestDto.getDescription());
         channelRepository.save(channel);
 
-        return channelRepository.save(channel);
+        return channelMapper.toDto(channel);
     }
 
     @Transactional
     @Override
-    public Channel createPrivateChannel(ChannelPrivateCreateRequestDto channelPrivateCreateRequestDto) {
+    public ChannelResponseDto createPrivateChannel(ChannelPrivateCreateRequestDto channelPrivateCreateRequestDto) {
         List<UUID> participantIds = channelPrivateCreateRequestDto.getParticipantIds();
         if (participantIds == null || participantIds.size() <= 1) {
             throw new IllegalStateException("2명 이상의 참여 유저가 있어야 합니다.");
@@ -66,7 +67,8 @@ public class BasicChannelService implements ChannelService {
             channel.getReadStatuses().add(readStatus);
             readStatusRepository.save(readStatus);
         }
-        return channelRepository.save(channel);
+
+        return channelMapper.toDto(channel);
     }
 
     @Transactional
@@ -86,7 +88,7 @@ public class BasicChannelService implements ChannelService {
                 .toList();
 
         return channels.stream()
-                .map(ChannelResponseDto::from)
+                .map(channelMapper::toDto)
                 .toList();
     }
 
@@ -96,7 +98,7 @@ public class BasicChannelService implements ChannelService {
         List<Channel> channels = channelRepository.findAllWithParticipants();
 
         return channels.stream()
-                .map(ChannelResponseDto::from)
+                .map(channelMapper::toDto)
                 .toList();
     }
 
