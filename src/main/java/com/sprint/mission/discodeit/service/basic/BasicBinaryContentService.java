@@ -3,24 +3,20 @@ package com.sprint.mission.discodeit.service.basic;
 import com.sprint.mission.discodeit.dto.request.BinaryContentCreateRequestDto;
 import com.sprint.mission.discodeit.dto.response.BinaryContentResponseDto;
 import com.sprint.mission.discodeit.entity.BinaryContent;
-import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.mapper.BinaryContentMapper;
 import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import com.sprint.mission.discodeit.repository.MessageRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.service.BinaryContentService;
-import com.sprint.mission.discodeit.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,28 +24,29 @@ public class BasicBinaryContentService implements BinaryContentService {
     private final BinaryContentRepository binaryContentRepository;
     private final UserRepository userRepository;
     private final MessageRepository messageRepository;
+    private final BinaryContentMapper binaryContentMapper;
 
     @Transactional
     @Override
     public BinaryContentResponseDto create(BinaryContentCreateRequestDto binaryContentCreateRequestDto) {
-        BinaryContent entity = new BinaryContent(
+        BinaryContent binaryContent = new BinaryContent(
                 binaryContentCreateRequestDto.getFileName(),
                 (long) binaryContentCreateRequestDto.getBytes().length,
                 binaryContentCreateRequestDto.getContentType()
         );
-        binaryContentRepository.save(entity);
-        return BinaryContentResponseDto.from(entity);
+        binaryContentRepository.save(binaryContent);
+        return binaryContentMapper.toDto(binaryContent);
     }
 
     @Transactional(readOnly = true)
     @Override
     public BinaryContentResponseDto find(UUID uuid) {
-        BinaryContent entity = binaryContentRepository.findById(uuid)
+        BinaryContent binaryContent = binaryContentRepository.findById(uuid)
                 .orElseThrow(()->new IllegalArgumentException("BinaryContent를 찾을 수 없습니다."));
-        if (entity == null) {
+        if (binaryContent == null) {
             throw new RuntimeException("Binary content를 찾을 수 없음");
         }
-        return BinaryContentResponseDto.from(entity);
+        return binaryContentMapper.toDto(binaryContent);
     }
 
     @Transactional(readOnly = true)
@@ -62,20 +59,20 @@ public class BasicBinaryContentService implements BinaryContentService {
         if(profileId==null){
             return List.of();
         }
-        BinaryContent content = binaryContentRepository.findById(profileId)
+        BinaryContent binaryContent = binaryContentRepository.findById(profileId)
                 .orElseThrow(()->new IllegalArgumentException("BinaryContent를 찾을 수 없습니다."));
-        if(content==null){
+        if(binaryContent==null){
             return List.of();
         }
 
-        return List.of(BinaryContentResponseDto.from(content));
+        return List.of(binaryContentMapper.toDto(binaryContent));
     }
 
     @Transactional(readOnly = true)
     @Override
     public List<BinaryContentResponseDto> findAllByIds(List<UUID> uuids) {
         return binaryContentRepository.findAllById(uuids).stream()
-                .map(BinaryContentResponseDto::from)
+                .map(binaryContentMapper::toDto)
                 .toList();
     }
 
@@ -96,7 +93,7 @@ public class BasicBinaryContentService implements BinaryContentService {
         return attachmentIds.stream()
                 .map(binaryContentRepository::findById)
                 .flatMap(Optional::stream)
-                .map(BinaryContentResponseDto::from)
+                .map(binaryContentMapper::toDto)
                 .toList();
     }
 
