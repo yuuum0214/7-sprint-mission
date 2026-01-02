@@ -1,6 +1,5 @@
 package com.sprint.mission.discodeit.dto.response;
 
-import com.sprint.mission.discodeit.entity.BinaryContent;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -15,12 +14,4 @@ public class BinaryContentResponseDto {
     private long size;
     private String contentType;
 
-    public static BinaryContentResponseDto from(BinaryContent binaryContent) {
-        return BinaryContentResponseDto.builder()
-                .id(binaryContent.getId())
-                .contentType(binaryContent.getContentType())
-                .fileName(binaryContent.getFileName())
-                .size(binaryContent.getSize())
-                .build();
-    }
 }
