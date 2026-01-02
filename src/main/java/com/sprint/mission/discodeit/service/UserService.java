@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public interface UserService {
 
-    void createUser(UserCreateRequestDto userCreateRequestDto, MultipartFile file); //유저 생성
+    UserResponseDto createUser(UserCreateRequestDto userCreateRequestDto, MultipartFile file); //유저 생성
 
 //    User readUser(UUID uuid); //특정 user 조회
     UserResponseDto findById(UUID userId); //특정 user 조회

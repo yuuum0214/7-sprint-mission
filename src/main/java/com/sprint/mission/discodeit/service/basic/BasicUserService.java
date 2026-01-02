@@ -6,6 +6,7 @@ import com.sprint.mission.discodeit.dto.response.UserResponseDto;
 import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.entity.UserStatus;
+import com.sprint.mission.discodeit.mapper.UserMapper;
 import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.repository.UserStatusRepository;
@@ -17,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -28,10 +28,11 @@ public class BasicUserService implements UserService {
     private final UserRepository userRepository;
     private final UserStatusRepository userStatusRepository;
     private final BinaryContentRepository binaryContentRepository;
+    private final UserMapper userMapper;
 
     @Transactional
     @Override
-    public void createUser(UserCreateRequestDto userCreateRequest, MultipartFile file) {
+    public UserResponseDto createUser(UserCreateRequestDto userCreateRequest, MultipartFile file) {
 
         //유저 생성
         if (userRepository.existsByEmail(userCreateRequest.getEmail()) ||
@@ -75,6 +76,8 @@ public class BasicUserService implements UserService {
         userStatusRepository.save(userStatus);
 
         log.info("User Created = {}", userCreateRequest.getUsername());
+
+        return userMapper.toDto(savedUser);
     }
 
     @Transactional(readOnly = true)
@@ -83,19 +86,13 @@ public class BasicUserService implements UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        return UserResponseDto.from(user, user.getUserStatus(), user.getProfile());
+        return userMapper.toDto(user);
     }
 
     @Transactional(readOnly = true)
     @Override
     public List<UserResponseDto> findAllUser() {
-        return userRepository.findAll().stream()
-                .map(user->UserResponseDto.from(
-                        user,
-                        user.getUserStatus(),
-                        user.getProfile()
-                ))
-                .collect(Collectors.toList());
+        return userMapper.toDtoList(userRepository.findAll());
     }
 
     @Transactional
@@ -127,8 +124,9 @@ public class BasicUserService implements UserService {
                 throw new RuntimeException("프로필 업로드 중 오류 발생" + e.getMessage());
             }
         }
+        User saved = userRepository.save(user);
 
-        return UserResponseDto.from(userRepository.save(user), user.getUserStatus(), user.getProfile());
+        return userMapper.toDto(saved);
     }
 
     @Transactional
