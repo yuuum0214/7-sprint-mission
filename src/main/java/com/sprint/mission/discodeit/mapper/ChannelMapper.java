@@ -4,11 +4,13 @@ import com.sprint.mission.discodeit.dto.response.ChannelResponseDto;
 import com.sprint.mission.discodeit.dto.response.UserResponseDto;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
+import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Component
 public class ChannelMapper {
     private final UserMapper userMapper;
 

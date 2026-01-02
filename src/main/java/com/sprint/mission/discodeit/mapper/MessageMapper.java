@@ -2,11 +2,12 @@ package com.sprint.mission.discodeit.mapper;
 
 import com.sprint.mission.discodeit.dto.response.MessageResponseDto;
 import com.sprint.mission.discodeit.entity.Message;
+import org.springframework.stereotype.Component;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Component
 public class MessageMapper {
     private final UserMapper userMapper;
     private final BinaryContentMapper binaryContentMapper;
