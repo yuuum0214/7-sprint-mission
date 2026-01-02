@@ -2,25 +2,23 @@ package com.sprint.mission.discodeit.service.basic;
 
 import com.sprint.mission.discodeit.dto.request.MessageCreateRequestDto;
 import com.sprint.mission.discodeit.dto.request.MessageUpdateRequestDto;
-import com.sprint.mission.discodeit.dto.response.ChannelResponseDto;
+import com.sprint.mission.discodeit.dto.response.MessageResponseDto;
 import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.mapper.MessageMapper;
 import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
 import com.sprint.mission.discodeit.repository.MessageRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
-import com.sprint.mission.discodeit.service.ChannelService;
 import com.sprint.mission.discodeit.service.MessageService;
-import com.sprint.mission.discodeit.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -36,11 +34,12 @@ public class BasicMessageService implements MessageService {
     private final ChannelRepository channelRepository;
     private final UserRepository userRepository;
     private final BinaryContentRepository binaryContentRepository;
+    private final MessageMapper messageMapper;
 
     @Transactional
     @Override
-    public Message createMessage(MessageCreateRequestDto messageCreateRequestDto,
-                                 List<MultipartFile> files) {
+    public MessageResponseDto createMessage(MessageCreateRequestDto messageCreateRequestDto,
+                                            List<MultipartFile> files) {
         Channel channel = channelRepository.findById(messageCreateRequestDto.getChannelId())
                 .orElseThrow(() -> new IllegalStateException("채널정보를 찾을 수 없습니다."));
 
@@ -63,41 +62,47 @@ public class BasicMessageService implements MessageService {
                 messageCreateRequestDto.getContent(),
                 attachments
         );
-        return messageRepository.save(message);
+        messageRepository.save(message);
+
+        return messageMapper.toDto(message);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public Message findByMessage(UUID uuid) {
-        return messageRepository.findById(uuid)
-                .orElse(null);
+    public MessageResponseDto findByMessage(UUID uuid) {
+        Message message = messageRepository.findById(uuid).orElse(null);
+
+        return messageMapper.toDto(message);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<Message> findUserAllMessage(UUID userId) {
+    public List<MessageResponseDto> findUserAllMessage(UUID userId) {
         if (userId == null) {
             throw new IllegalStateException("유저 정보가 없습니다.");
         }
 
-        return messageRepository.findAll().stream()
+        List<Message> messages = messageRepository.findAll().stream()
                 .filter(m -> m.getId().equals(userId))
                 .sorted(Comparator.comparing(Message::getCreatedAt))
                 .toList();
+        return messageMapper.toDtoList(messages);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<Message> findChannelAllMessage(UUID channelId) {
+    public List<MessageResponseDto> findChannelAllMessage(UUID channelId) {
         if (channelId == null) {
             throw new IllegalArgumentException("채널 정보가 없습니다.");
         }
-        return messageRepository.findAllByChannelId(channelId);
+        messageRepository.findAllByChannelId(channelId);
+
+        return messageMapper.toDtoList(messageRepository.findAllByChannelId(channelId));
     }
 
     @Transactional
     @Override
-    public Message updateMessage(UUID messageId, MessageUpdateRequestDto messageUpdateRequestDto) {
+    public MessageResponseDto updateMessage(UUID messageId, MessageUpdateRequestDto messageUpdateRequestDto) {
         Message message = messageRepository.findById(messageId)
                 .orElseThrow(() -> new IllegalArgumentException("수정할 메시지를 찾을 수 없습니다."));
 
@@ -107,8 +112,9 @@ public class BasicMessageService implements MessageService {
                 ? new ArrayList<>(message.getAttachments())
                 : new ArrayList<>();
         message.setAttachmentIds(attachments);
-        System.out.println("[Message 수정] : " + message.getContent());
-        return messageRepository.save(message);
+        messageRepository.save(message);
+
+        return messageMapper.toDto(message);
     }
 
     @Transactional
