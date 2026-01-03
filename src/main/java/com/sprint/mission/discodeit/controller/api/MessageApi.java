@@ -34,8 +34,7 @@ public interface MessageApi {
     })
     public MessageResponseDto createMessage(
             @Parameter(description = "Message 생성 정보")
-            @RequestPart("messageCreateRequest")
-            @ModelAttribute MessageCreateRequestDto messageCreateRequest,
+            @RequestPart("messageCreateRequest") MessageCreateRequestDto messageCreateRequest,
             @RequestParam(value = "attachments", required = false)
             @Parameter(description = "Message 첨부 파일들") List<MultipartFile> files
 //            @RequestPart(value = "attachments", required = false) List<MultipartFile> files

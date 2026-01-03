@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -34,7 +36,12 @@ public class BasicReadStatusService implements ReadStatusService {
                 readStatusCreateRequestDto.getUserId(),
                 readStatusCreateRequestDto.getChannelId()
         );
-        if (existing != null) throw new IllegalArgumentException("ReadStatus already exists");
+        if (existing != null){
+//            throw new IllegalArgumentException("ReadStatus already exists");
+            existing.setUpdate(Instant.now());
+            ReadStatus saved = readStatusRepository.save(existing);
+            return readStatusMapper.toDto(saved);
+        }
 
         User user = userRepository.findById(readStatusCreateRequestDto.getUserId())
                 .orElseThrow(()->new IllegalArgumentException("User not found"));
@@ -47,6 +54,10 @@ public class BasicReadStatusService implements ReadStatusService {
 
         return readStatusMapper.toDto(readStatus);
     }
+
+    // ReadStatus문제 이제 안 뜸, 메시지 입력하면 각 채널 ID에 맞게 DB저장됨. 근데 메시지는 한 화면에 다 보임
+    // 메시지가 한 창에서 다 보여서 그런지, 다른 private에 강제 참여됨.
+
 
     @Transactional(readOnly = true)
     @Override

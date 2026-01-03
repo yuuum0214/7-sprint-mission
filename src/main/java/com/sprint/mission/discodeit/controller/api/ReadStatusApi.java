@@ -42,9 +42,7 @@ public interface ReadStatusApi {
                     )
             )
     })
-    public ReadStatusDto create_1(@RequestBody ReadStatusCreateRequestDto readStatusCreateRequestDto,
-                                  @RequestParam UUID userId,
-                                  @RequestParam UUID channelId);
+    public ReadStatusDto create_1(@RequestBody ReadStatusCreateRequestDto readStatusCreateRequestDto);
 
     @Operation(summary = "Message 읽음 상태 수정", operationId = "update_1")
     @ApiResponses(value = {

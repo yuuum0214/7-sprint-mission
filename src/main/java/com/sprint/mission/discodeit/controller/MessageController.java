@@ -28,7 +28,7 @@ public class MessageController implements MessageApi {
     // 메시지 전송(저장)
     @PostMapping(consumes = "multipart/form-data")
     public MessageResponseDto createMessage(
-            @ModelAttribute MessageCreateRequestDto messageCreateRequest,
+            @RequestPart("messageCreateRequest") MessageCreateRequestDto messageCreateRequest,
             @RequestPart(value = "attachments", required = false) List<MultipartFile> files) {
         System.out.println("files: " + files);
         return messageService.createMessage(messageCreateRequest, files);

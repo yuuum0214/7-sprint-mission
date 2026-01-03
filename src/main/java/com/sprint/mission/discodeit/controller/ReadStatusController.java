@@ -27,11 +27,9 @@ public class ReadStatusController implements ReadStatusApi {
     private final ReadStatusService readStatusService;
 
     @PostMapping
-    public ReadStatusDto create_1(@RequestBody ReadStatusCreateRequestDto readStatusCreateRequestDto,
-                                  @RequestParam UUID userId,
-                                  @RequestParam UUID channelId) {
-        readStatusCreateRequestDto.getUserId();
-        readStatusCreateRequestDto.getChannelId();
+    public ReadStatusDto create_1(@RequestBody ReadStatusCreateRequestDto readStatusCreateRequestDto) {
+//        readStatusCreateRequestDto.getUserId();
+//        readStatusCreateRequestDto.getChannelId();
         return readStatusService.create(readStatusCreateRequestDto);
     }
 
