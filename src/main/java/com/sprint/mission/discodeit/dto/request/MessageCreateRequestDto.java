@@ -1,5 +1,6 @@
 package com.sprint.mission.discodeit.dto.request;
 
+import lombok.Data;
 import lombok.Getter;
 
 import java.util.UUID;

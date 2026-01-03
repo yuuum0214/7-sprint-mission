@@ -4,11 +4,16 @@ import com.sprint.mission.discodeit.controller.api.MessageApi;
 import com.sprint.mission.discodeit.dto.request.MessageCreateRequestDto;
 import com.sprint.mission.discodeit.dto.request.MessageUpdateRequestDto;
 import com.sprint.mission.discodeit.dto.response.MessageResponseDto;
+import com.sprint.mission.discodeit.dto.response.PageResponseDto;
+import com.sprint.mission.discodeit.mapper.PageResponseMapper;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
 import com.sprint.mission.discodeit.service.MessageService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,8 +33,13 @@ public class MessageController implements MessageApi {
     // 메시지 전송(저장)
     @PostMapping(consumes = "multipart/form-data")
     public MessageResponseDto createMessage(
-            @RequestPart("messageCreateRequest") MessageCreateRequestDto messageCreateRequest,
+            @RequestPart("messageCreateRequest")MessageCreateRequestDto messageCreateRequest,
             @RequestPart(value = "attachments", required = false) List<MultipartFile> files) {
+        log.info("=== Message 생성 ===");
+        log.info("channelId: {}", messageCreateRequest.getChannelId());
+        log.info("authorId: {}", messageCreateRequest.getAuthorId());
+        log.info("content: {}", messageCreateRequest.getContent());
+
         System.out.println("files: " + files);
         return messageService.createMessage(messageCreateRequest, files);
     }
@@ -56,11 +66,19 @@ public class MessageController implements MessageApi {
 
     // 특정 채널 메시지 목록 조회
     @GetMapping
-    public List<MessageResponseDto> getMessageByChannel(
-            @RequestParam UUID channelId) {
+    public PageResponseDto<MessageResponseDto> getMessageByChannel(
+            @RequestParam UUID channelId,
+            Pageable pageable) {
+
+        log.info("=== Message 조회 ===");
+        log.info("channelId: {}", channelId);
+        log.info("pageable: {}", pageable);
+
         var channel = channelRepository.findById(channelId)
                 .orElseThrow(() -> new IllegalArgumentException("채널을 찾을 수 없습니다."));
 
-        return messageService.findChannelAllMessage(channelId);
+        Slice<MessageResponseDto> messages = messageService.findChannelAllMessage(channelId, pageable);
+
+        return PageResponseMapper.fromSlice(messages);
     }
 }

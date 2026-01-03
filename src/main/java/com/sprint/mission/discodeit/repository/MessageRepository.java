@@ -2,7 +2,8 @@ package com.sprint.mission.discodeit.repository;
 
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
-import com.sprint.mission.discodeit.entity.User;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.Instant;
@@ -18,7 +19,7 @@ public interface MessageRepository extends JpaRepository<Message, UUID> {
 
     //메시지 전체 조회 : findAll
 
-    List<Message> findAllByChannelId(UUID channelId); // 채널관련 메시지 전체조회
+    Slice<Message> findAllByChannelId(UUID channelId, Pageable pageable);
 
     List<Message> findByChannelId(UUID channelId); // 채널에 속한 메시지의 파일 확인
 

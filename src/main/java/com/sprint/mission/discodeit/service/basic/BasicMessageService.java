@@ -15,6 +15,8 @@ import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.service.MessageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -91,13 +93,13 @@ public class BasicMessageService implements MessageService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<MessageResponseDto> findChannelAllMessage(UUID channelId) {
+    public Slice<MessageResponseDto> findChannelAllMessage(UUID channelId, Pageable pageable) {
         if (channelId == null) {
             throw new IllegalArgumentException("채널 정보가 없습니다.");
         }
-        messageRepository.findAllByChannelId(channelId);
+        Slice<Message> messages = messageRepository.findAllByChannelId(channelId, pageable);
 
-        return messageMapper.toDtoList(messageRepository.findAllByChannelId(channelId));
+        return messages.map(messageMapper::toDto);
     }
 
     @Transactional

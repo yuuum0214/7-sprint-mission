@@ -2,12 +2,14 @@ package com.sprint.mission.discodeit.controller.api;
 
 import com.sprint.mission.discodeit.dto.request.MessageCreateRequestDto;
 import com.sprint.mission.discodeit.dto.response.MessageResponseDto;
+import com.sprint.mission.discodeit.dto.response.PageResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,7 +36,7 @@ public interface MessageApi {
     })
     public MessageResponseDto createMessage(
             @Parameter(description = "Message 생성 정보")
-            @RequestPart("messageCreateRequest") MessageCreateRequestDto messageCreateRequest,
+            @RequestPart("messageCreateRequest") MessageCreateRequestDto messageCreateRequestDto,
             @RequestParam(value = "attachments", required = false)
             @Parameter(description = "Message 첨부 파일들") List<MultipartFile> files
 //            @RequestPart(value = "attachments", required = false) List<MultipartFile> files
@@ -92,9 +94,10 @@ public interface MessageApi {
                     description = "Message 목록 조회 성공"
             )
     })
-    public List<MessageResponseDto> getMessageByChannel(
+    public PageResponseDto<MessageResponseDto> getMessageByChannel(
             @Parameter(description = "조회할 Channel ID")
-            @RequestParam UUID channelId
+            @RequestParam UUID channelId,
+            Pageable pageable
     );
 
 }

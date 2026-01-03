@@ -3,6 +3,8 @@ package com.sprint.mission.discodeit.service;
 import com.sprint.mission.discodeit.dto.request.MessageCreateRequestDto;
 import com.sprint.mission.discodeit.dto.request.MessageUpdateRequestDto;
 import com.sprint.mission.discodeit.dto.response.MessageResponseDto;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -17,7 +19,7 @@ public interface MessageService {
 
     List<MessageResponseDto> findUserAllMessage(UUID userId); //유저 관련 전체 메시지 조회
 
-    List<MessageResponseDto> findChannelAllMessage(UUID channeId); // 채널 관련 전체 메시지 조회
+    Slice<MessageResponseDto> findChannelAllMessage(UUID channeId, Pageable pageable); // 채널 관련 전체 메시지 조회
 
     MessageResponseDto updateMessage(UUID messageId, MessageUpdateRequestDto messageUpdateRequestDto);
 //                          List<MultipartFile> files); //수정
