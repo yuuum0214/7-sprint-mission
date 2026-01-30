@@ -11,6 +11,13 @@ spring:
       max-file-size: 10MB
       max-request-size: 10MB
 
+  data:
+    web:
+      pageable:
+        default-page-size: 50
+        max-page-size: 50
+        one-indexed-parameters: false
+
   open-in-view: false
 
 logging:
