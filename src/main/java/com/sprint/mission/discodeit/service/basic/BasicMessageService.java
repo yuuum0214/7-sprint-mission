@@ -13,6 +13,7 @@ import com.sprint.mission.discodeit.repository.ChannelRepository;
 import com.sprint.mission.discodeit.repository.MessageRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.service.MessageService;
+import com.sprint.mission.discodeit.storage.BinaryContentStorage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -36,6 +38,7 @@ public class BasicMessageService implements MessageService {
     private final ChannelRepository channelRepository;
     private final UserRepository userRepository;
     private final BinaryContentRepository binaryContentRepository;
+    private final BinaryContentStorage binaryContentStorage;
     private final MessageMapper messageMapper;
 
     @Transactional
@@ -52,9 +55,20 @@ public class BasicMessageService implements MessageService {
         if (files != null && !files.isEmpty()) {
             for (MultipartFile file : files) {
                 if (file == null || file.isEmpty()) continue;
-                BinaryContent saved = binaryContentRepository.save(
-                        new BinaryContent(file.getOriginalFilename(), file.getSize(), file.getContentType()));
-                attachments.add(saved);
+
+                try {
+                    BinaryContent binaryContent = new BinaryContent(
+                            file.getOriginalFilename(),
+                            file.getSize(),
+                            file.getContentType()
+                    );
+                    BinaryContent saved = binaryContentRepository.save(binaryContent);
+                    binaryContentStorage.put(saved.getId(), file.getBytes());
+                    attachments.add(saved);
+                } catch (IOException e){
+                    log.error("파일 저장 실패", e);
+                    throw new RuntimeException("파일 저장 실패", e);
+                }
             }
         }
 
@@ -110,11 +124,11 @@ public class BasicMessageService implements MessageService {
 
         message.setUpdate(messageUpdateRequestDto.getNewContent());
 
-        List<BinaryContent> attachments = message.getAttachments() != null
-                ? new ArrayList<>(message.getAttachments())
-                : new ArrayList<>();
-        message.setAttachmentIds(attachments);
-        messageRepository.save(message);
+//        List<BinaryContent> attachments = message.getAttachments() != null
+//                ? new ArrayList<>(message.getAttachments())
+//                : new ArrayList<>();
+//        message.setAttachmentIds(attachments);
+//        messageRepository.save(message);
 
         return messageMapper.toDto(message);
     }
