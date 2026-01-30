@@ -11,9 +11,11 @@ import com.sprint.mission.discodeit.service.MessageService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,7 +35,7 @@ public class MessageController implements MessageApi {
     // 메시지 전송(저장)
     @PostMapping(consumes = "multipart/form-data")
     public MessageResponseDto createMessage(
-            @RequestPart("messageCreateRequest")MessageCreateRequestDto messageCreateRequest,
+            @RequestPart("messageCreateRequest") MessageCreateRequestDto messageCreateRequest,
             @RequestPart(value = "attachments", required = false) List<MultipartFile> files) {
         log.info("=== Message 생성 ===");
         log.info("channelId: {}", messageCreateRequest.getChannelId());
@@ -45,30 +47,26 @@ public class MessageController implements MessageApi {
     }
 
     // 메시지 수정
-    @PatchMapping(value = "/{messageId}") //, consumes = "multipart/form-data")
+    @PatchMapping(value = "/{messageId}")
     public MessageResponseDto updateMessage(
-            @PathVariable UUID messageId
-//            @RequestParam String newContent
-            /*@RequestPart(value = "file", required = false) List<MultipartFile> files*/) {
-        MessageUpdateRequestDto dto = new MessageUpdateRequestDto();
-//        dto.setMessageId(messageId);
-//        dto.setContent(newContent);
-        return messageService.updateMessage(messageId, dto); //, files);
-//        return MessageResponseDto.from(updateMessage);
+            @PathVariable UUID messageId,
+            @RequestBody MessageUpdateRequestDto messageUpdateRequest) {
+        return messageService.updateMessage(messageId, messageUpdateRequest);
     }
 
     // 메시지 삭제
     @DeleteMapping("/{messageId}")
-    public void deleteMessage(
+    public ResponseEntity<Void> deleteMessage(
             @PathVariable UUID messageId) {
         messageService.deleteMessage(messageId);
+        return ResponseEntity.noContent().build();
     }
 
     // 특정 채널 메시지 목록 조회
     @GetMapping
     public PageResponseDto<MessageResponseDto> getMessageByChannel(
             @RequestParam UUID channelId,
-            Pageable pageable) {
+            @PageableDefault(size = 50, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
         log.info("=== Message 조회 ===");
         log.info("channelId: {}", channelId);

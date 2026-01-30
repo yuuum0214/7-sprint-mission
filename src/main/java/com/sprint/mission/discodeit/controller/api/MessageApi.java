@@ -1,6 +1,7 @@
 package com.sprint.mission.discodeit.controller.api;
 
 import com.sprint.mission.discodeit.dto.request.MessageCreateRequestDto;
+import com.sprint.mission.discodeit.dto.request.MessageUpdateRequestDto;
 import com.sprint.mission.discodeit.dto.response.MessageResponseDto;
 import com.sprint.mission.discodeit.dto.response.PageResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,6 +11,9 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -39,7 +43,6 @@ public interface MessageApi {
             @RequestPart("messageCreateRequest") MessageCreateRequestDto messageCreateRequestDto,
             @RequestParam(value = "attachments", required = false)
             @Parameter(description = "Message 첨부 파일들") List<MultipartFile> files
-//            @RequestPart(value = "attachments", required = false) List<MultipartFile> files
     );
 
     // 메시지 수정
@@ -60,9 +63,8 @@ public interface MessageApi {
     })
     public MessageResponseDto updateMessage(
             @Parameter(description = "수정할 Message ID")
-            @PathVariable UUID messageId
-//            @RequestParam String newContent
-//            @RequestPart(value = "file", required = false) List<MultipartFile> files
+            @PathVariable UUID messageId,
+            @RequestBody MessageUpdateRequestDto messageUpdateRequest
     );
 
     // 메시지 삭제
@@ -81,7 +83,7 @@ public interface MessageApi {
                     )
             )
     })
-    public void deleteMessage(
+    public ResponseEntity<Void> deleteMessage(
             @Parameter(description = "삭제할 Message ID")
             @PathVariable UUID messageId
     );
@@ -97,7 +99,7 @@ public interface MessageApi {
     public PageResponseDto<MessageResponseDto> getMessageByChannel(
             @Parameter(description = "조회할 Channel ID")
             @RequestParam UUID channelId,
-            Pageable pageable
+            @PageableDefault(size = 50, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     );
 
 }
