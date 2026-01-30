@@ -68,9 +68,10 @@ public class UserController implements UserApi {
 
     //사용자 삭제
     @DeleteMapping("/{userId}")
-    public void delete(
+    public ResponseEntity<Void> delete(
             @Parameter(description = "삭제할 User ID")
             @PathVariable("userId") UUID userId) {
         userService.deleteUser(userId);
+        return ResponseEntity.noContent().build();
     }
 }

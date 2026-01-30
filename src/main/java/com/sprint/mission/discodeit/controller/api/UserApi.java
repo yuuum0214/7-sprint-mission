@@ -100,7 +100,7 @@ public interface UserApi {
                     )
             )
     })
-    public void delete(
+    public ResponseEntity<Void> delete(
             @Parameter(description = "삭제할 User ID")
             @PathVariable("userId") UUID userId);
 }
