@@ -6,5 +6,5 @@ import java.time.Instant;
 
 @Getter
 public class UserStatusUpdateRequestDto {
-    private Instant lastActiveAt;
+    private Instant newLastActiveAt;
 }

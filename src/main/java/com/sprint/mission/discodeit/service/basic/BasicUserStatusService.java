@@ -62,8 +62,8 @@ public class BasicUserStatusService implements UserStatusService {
                 .filter(s -> s.getId().equals(uuid))
                 .findFirst().orElseThrow(() -> new RuntimeException("해당 UserStatus를 찾을 수 없습니다."));
 
-        if (userStatusUpdateRequestDto.getLastActiveAt() != null) {
-            userStatus.updateLastActiveAt(userStatusUpdateRequestDto.getLastActiveAt());
+        if (userStatusUpdateRequestDto.getNewLastActiveAt() != null) {
+            userStatus.updateLastActiveAt(userStatusUpdateRequestDto.getNewLastActiveAt());
         }
         UserStatus saved = userStatusRepository.save(userStatus);
         return userStatusMapper.toDto(saved);
@@ -74,11 +74,11 @@ public class BasicUserStatusService implements UserStatusService {
     public UserStatusResponseDto updateByUserId(UUID userId, UserStatusUpdateRequestDto userStatusUpdateRequestDto) {
         UserStatus userStatus = userStatusRepository.findByUser_Id(userId)
                 .orElseThrow(()->new IllegalArgumentException("User를 찾을 수 없습니다."));
-        if (userStatus == null) {
-            throw new RuntimeException("해당 유저의 상태를 찾을 수 없습니다");
-        }
-        if (userStatusUpdateRequestDto.getLastActiveAt() != null) {
-            userStatus.updateLastActiveAt(userStatusUpdateRequestDto.getLastActiveAt());
+//        if (userStatus == null) {
+//            throw new RuntimeException("해당 유저의 상태를 찾을 수 없습니다");
+//        }
+        if (userStatusUpdateRequestDto.getNewLastActiveAt() != null) {
+            userStatus.updateLastActiveAt(userStatusUpdateRequestDto.getNewLastActiveAt());
         }
         UserStatus saved = userStatusRepository.save(userStatus);
         return userStatusMapper.toDto(saved);
