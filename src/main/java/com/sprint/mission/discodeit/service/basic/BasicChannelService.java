@@ -123,7 +123,7 @@ public class BasicChannelService implements ChannelService {
 
     @Transactional
     @Override
-    public void updateChannel(UUID uuid, ChannelUpdateRequestDto channelUpdateRequestDto) {
+    public ChannelResponseDto updateChannel(UUID uuid, ChannelUpdateRequestDto channelUpdateRequestDto) {
         Channel channel = channelRepository.findById(uuid)
                 .orElseThrow(() -> new IllegalArgumentException("수정할 채널이 없습니다."));
         if(channel.getType() == PRIVATE){
@@ -131,6 +131,7 @@ public class BasicChannelService implements ChannelService {
         }
 
         channel.setUpdate(channelUpdateRequestDto.getNewName(), channelUpdateRequestDto.getNewDescription());
+        return channelMapper.toDto(channel);
     }
 
     @Transactional

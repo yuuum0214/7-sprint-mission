@@ -19,7 +19,7 @@ public interface ChannelService {
     List<ChannelResponseDto> findAllByUserId(UUID userId);
     List<ChannelResponseDto> findAll();
 
-    void updateChannel(UUID uuid, ChannelUpdateRequestDto channelUpdateRequestDto); //채널 수정
+    ChannelResponseDto updateChannel(UUID uuid, ChannelUpdateRequestDto channelUpdateRequestDto); //채널 수정
 
     void deleteChannel(UUID channelId); //채널 삭제
 
