@@ -1,66 +1,42 @@
 package com.sprint.mission.discodeit.exception;
 
-import io.swagger.v3.oas.annotations.Hidden;
+import com.sprint.mission.discodeit.dto.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
 
-    // 400 Bad Request 반환
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Map<String, Object>> handleIllegalArgumentException(IllegalArgumentException e) {
-        log.error("IllegalArgumentException: {}", e.getMessage());
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("status", 400);
-        response.put("message", e.getMessage());
-
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(response);
+    @ExceptionHandler(DiscodeitException.class)
+    public ResponseEntity<ErrorResponse> handleDiscodeitException(DiscodeitException e) {
+        return ResponseEntity.status(e.getErrorCode().getStatus()).body(ErrorResponse.from(e));
     }
 
-    @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<Map<String, Object>> handleIllegalStateException(IllegalStateException e) {
-        log.error("IllegalStateException: {}", e.getMessage());
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException e) {
+        Map<String, Object> errors = new HashMap<>();
+        e.getBindingResult().getFieldErrors().forEach(error -> errors
+                .put(error.getField(), error.getDefaultMessage())
+        );
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("status", 404);
-        response.put("message", e.getMessage());
-
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(response);
-    }
-
-    // 404 Not Fount 반환
-    @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<Map<String, String>> handleNotFound(NoSuchElementException e) {
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(Map.of("message", e.getMessage()));
+        return ResponseEntity.badRequest().body(
+                ErrorResponse.of(400, "INVALID_INPUT", "입력값 검증 실패", e.getClass().getSimpleName(), errors)
+        );
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, Object>> handleException(Exception e) {
-        log.error(e.getMessage(), e);
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("status", 500);
-        response.put("message", e.getMessage());
-
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(response);
+    public ResponseEntity<ErrorResponse> handleAll(Exception e){
+        log.error("Unknown error: ", e);
+        return ResponseEntity.internalServerError().body(
+                ErrorResponse.of(500, "SERVER_ERROR", "서버 내부 오류", e.getClass().getSimpleName(), null)
+        );
     }
 
 }
