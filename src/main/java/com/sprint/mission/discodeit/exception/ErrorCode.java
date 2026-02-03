@@ -13,6 +13,9 @@ public enum ErrorCode {
     USER_EXISTS_EMAIL(HttpStatus.CONFLICT, "이미 존재하는 이메일입니다.", "U-003"),
     //CHANNEL
     CHANNEL_NOT_FOUNT(HttpStatus.NOT_FOUND, "채널을 찾을 수 없습니다", "C-001"),
+    CHANNEL_NAME_NOT_BLANK(HttpStatus.BAD_REQUEST, "채널 이름은 필수입니다.", "C-002"),
+    CHANNEL_PRIVATE_PARTICIPANTS(HttpStatus.BAD_REQUEST, "참가자는 필수입니다.", "C-003"),
+    PRIVATE_CHANNEL_NOT_IMPOSABLE_UPDATED(HttpStatus.BAD_REQUEST, "private 채널은 수정할 수 없습니다.", "C-004"),
     //MESSAGE
 
     //STATUS
