@@ -9,6 +9,7 @@ import com.sprint.mission.discodeit.mapper.PageResponseMapper;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
 import com.sprint.mission.discodeit.service.MessageService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -35,7 +36,7 @@ public class MessageController implements MessageApi {
     // 메시지 전송(저장)
     @PostMapping(consumes = "multipart/form-data")
     public MessageResponseDto createMessage(
-            @RequestPart("messageCreateRequest") MessageCreateRequestDto messageCreateRequest,
+            @Valid @RequestPart("messageCreateRequest") MessageCreateRequestDto messageCreateRequest,
             @RequestPart(value = "attachments", required = false) List<MultipartFile> files) {
         log.info("=== Message 생성 ===");
         log.info("channelId: {}", messageCreateRequest.getChannelId());

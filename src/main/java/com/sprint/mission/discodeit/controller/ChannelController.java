@@ -9,6 +9,7 @@ import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.service.ChannelService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -29,7 +30,7 @@ public class ChannelController implements ChannelApi {
     // 공개 채널 생성
     @PostMapping("/public")
     public ResponseEntity<ChannelResponseDto> createPublicChannel(
-            @RequestBody ChannelPublicCreateRequestDto channelPublicCreateRequestDto) {
+            @Valid @RequestBody ChannelPublicCreateRequestDto channelPublicCreateRequestDto) {
 //        Channel channel = channelService.createPublicChannel(channelPublicCreateRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(channelService.createPublicChannel(channelPublicCreateRequestDto));

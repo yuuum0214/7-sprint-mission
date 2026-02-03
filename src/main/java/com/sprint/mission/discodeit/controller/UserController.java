@@ -10,6 +10,7 @@ import com.sprint.mission.discodeit.service.UserService;
 import com.sprint.mission.discodeit.service.UserStatusService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +33,7 @@ public class UserController implements UserApi {
     //사용자 생성
     @PostMapping(consumes = "multipart/form-data")
     public void create(
-            @RequestPart("userCreateRequest") UserCreateRequestDto userCreateRequest,
+            @RequestPart("userCreateRequest") @Valid UserCreateRequestDto userCreateRequest,
             @RequestPart(value = "profile", required = false) MultipartFile profile
     ) {
         System.out.println("userCreateRequest = " + userCreateRequest.getUsername());
