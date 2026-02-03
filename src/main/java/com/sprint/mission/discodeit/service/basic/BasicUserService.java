@@ -9,7 +9,7 @@ import com.sprint.mission.discodeit.entity.UserStatus;
 import com.sprint.mission.discodeit.exception.ErrorCode;
 import com.sprint.mission.discodeit.exception.binarycontent.BinaryContentBadRequestException;
 import com.sprint.mission.discodeit.exception.user.UserAlreadyExistException;
-import com.sprint.mission.discodeit.exception.user.UserNotFountException;
+import com.sprint.mission.discodeit.exception.user.UserNotFoundException;
 import com.sprint.mission.discodeit.mapper.UserMapper;
 import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
@@ -96,7 +96,7 @@ public class BasicUserService implements UserService {
     @Override
     public UserResponseDto findById(UUID userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFountException(ErrorCode.USER_NOT_FOUNT));
+                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUNT));
 
         return userMapper.toDto(user);
     }
@@ -111,7 +111,7 @@ public class BasicUserService implements UserService {
     @Override
     public UserResponseDto updateUser(UUID userId, UserUpdateRequestDto userUpdateRequestDto, MultipartFile profile) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFountException(ErrorCode.USER_NOT_FOUNT));
+                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUNT));
 
         if (userUpdateRequestDto.getNewUsername() != null && !userUpdateRequestDto.getNewUsername().isBlank()) {
             user.setUserName(userUpdateRequestDto.getNewUsername());
@@ -153,7 +153,7 @@ public class BasicUserService implements UserService {
     @Override
     public void deleteUser(UUID uuid) {
         User user = userRepository.findById(uuid)
-                .orElseThrow(() -> new UserNotFountException(ErrorCode.USER_NOT_FOUNT));
+                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUNT));
 
         log.info("Deleted Username = {}, UserStatus = {}, UserProfile = {}",
                 user.getUsername(), user.getUserStatus(), user.getProfile());
