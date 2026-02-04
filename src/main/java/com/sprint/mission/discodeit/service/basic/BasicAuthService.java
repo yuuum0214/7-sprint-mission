@@ -8,6 +8,7 @@ import com.sprint.mission.discodeit.exception.auth.AuthFailException;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.service.AuthService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +16,7 @@ import java.time.Instant;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BasicAuthService implements AuthService {
     private final UserRepository userRepository;
 
@@ -22,9 +24,13 @@ public class BasicAuthService implements AuthService {
     @Override
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
         User user = userRepository.findByUsername(loginRequestDto.getUsername()
-        ).orElseThrow(() -> new AuthFailException(ErrorCode.AUTH_INVALID_CREDENTIALS));
+        ).orElseThrow(() -> {
+            log.warn("Fail Username");
+            return new AuthFailException(ErrorCode.AUTH_INVALID_CREDENTIALS);
+        });
 
         if(!user.getPassword().equals(loginRequestDto.getPassword())){
+            log.warn("Fail Password");
             throw new AuthFailException(ErrorCode.AUTH_INVALID_CREDENTIALS);
         }
 
