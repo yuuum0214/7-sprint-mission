@@ -36,7 +36,6 @@ public class UserController implements UserApi {
             @RequestPart("userCreateRequest") @Valid UserCreateRequestDto userCreateRequest,
             @RequestPart(value = "profile", required = false) MultipartFile profile
     ) {
-        System.out.println("userCreateRequest = " + userCreateRequest.getUsername());
         userService.createUser(userCreateRequest, profile);
     }
 
@@ -49,7 +48,6 @@ public class UserController implements UserApi {
     //사용자 수정
     @PatchMapping(value = "/{userId}", consumes = "multipart/form-data")
     public ResponseEntity<UserResponseDto> update(
-            @Parameter(description = "수정할 User ID")
             @PathVariable UUID userId,
             @RequestPart("userUpdateRequest") UserUpdateRequestDto userUpdateRequestDto,
             @RequestPart(value = "profile", required = false) MultipartFile profile) {
@@ -70,7 +68,6 @@ public class UserController implements UserApi {
     //사용자 삭제
     @DeleteMapping("/{userId}")
     public ResponseEntity<Void> delete(
-            @Parameter(description = "삭제할 User ID")
             @PathVariable("userId") UUID userId) {
         userService.deleteUser(userId);
         return ResponseEntity.noContent().build();

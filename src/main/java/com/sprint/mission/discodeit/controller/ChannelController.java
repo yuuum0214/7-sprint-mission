@@ -45,7 +45,6 @@ public class ChannelController implements ChannelApi {
     // 공개 채널 정보 수정
     @PatchMapping("/{channelId}")
     public void updateChannel(
-            @Parameter(description = "수정할 Channel ID")
             @PathVariable UUID channelId,
             @RequestBody ChannelUpdateRequestDto channelUpdateRequestDto) {
         channelService.updateChannel(channelId, channelUpdateRequestDto);
@@ -54,7 +53,6 @@ public class ChannelController implements ChannelApi {
     // 채널 삭제
     @DeleteMapping("/{channelId}")
     public ResponseEntity<Void> deleteChannel(
-            @Parameter(description = "삭제할 Channel ID")
             @PathVariable("channelId") UUID uuid) {
         channelService.deleteChannel(uuid);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
@@ -63,7 +61,6 @@ public class ChannelController implements ChannelApi {
     // 특정 사용자의 채널 목록 조회
     @GetMapping
     public List<ChannelResponseDto> getChannel(
-            @Parameter(description = "조회할 User ID")
             @RequestParam(required = false) UUID userId) {
         if(userId != null){
             return channelService.findAllByUserId(userId);

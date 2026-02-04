@@ -26,7 +26,6 @@ public class BinaryContentController implements BinaryContentApi {
 
     @GetMapping("/{binaryContentId}")
     public ResponseEntity<BinaryContentResponseDto> findById(
-            @Parameter(description = "조회할 첨부 파일 ID")
             @PathVariable("binaryContentId") UUID uuid) {
         return ResponseEntity.ok().body(binaryContentService.find(uuid));
     }

@@ -38,12 +38,7 @@ public class MessageController implements MessageApi {
     public MessageResponseDto createMessage(
             @Valid @RequestPart("messageCreateRequest") MessageCreateRequestDto messageCreateRequest,
             @RequestPart(value = "attachments", required = false) List<MultipartFile> files) {
-        log.info("=== Message 생성 ===");
-        log.info("channelId: {}", messageCreateRequest.getChannelId());
-        log.info("authorId: {}", messageCreateRequest.getAuthorId());
-        log.info("content: {}", messageCreateRequest.getContent());
 
-        System.out.println("files: " + files);
         return messageService.createMessage(messageCreateRequest, files);
     }
 

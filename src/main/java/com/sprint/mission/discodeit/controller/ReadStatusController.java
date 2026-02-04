@@ -28,23 +28,18 @@ public class ReadStatusController implements ReadStatusApi {
 
     @PostMapping
     public ReadStatusDto create_1(@RequestBody ReadStatusCreateRequestDto readStatusCreateRequestDto) {
-//        readStatusCreateRequestDto.getUserId();
-//        readStatusCreateRequestDto.getChannelId();
         return readStatusService.create(readStatusCreateRequestDto);
     }
 
     @PatchMapping("/{readStatusId}")
-    public ReadStatusDto updateStatus(@Parameter(description = "수정할 읽음 상태 ID")
-                                      @PathVariable UUID readStatusId,
+    public ReadStatusDto updateStatus(@PathVariable UUID readStatusId,
                                       @RequestBody ReadStatusUpdateRequestDto readStatusUpdateRequestDto) {
-//        readStatusUpdateRequestDto.setId(readStatusId);
         readStatusUpdateRequestDto.setNewLastReadAt(readStatusUpdateRequestDto.getNewLastReadAt());
         return readStatusService.update(readStatusId, readStatusUpdateRequestDto);
     }
 
     @GetMapping(params = "userId")
-    public List<ReadStatusDto> findAllByUserId /*getReadStatus*/(@Parameter(description = "조회할 User ID")
-                                                                 @RequestParam UUID userId) {
+    public List<ReadStatusDto> findAllByUserId /*getReadStatus*/ (@RequestParam UUID userId) {
         return readStatusService.findAllByUserId(userId);
     }
 }
