@@ -96,7 +96,7 @@ public class BasicUserService implements UserService {
     @Override
     public UserResponseDto findById(UUID userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUNT));
+                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND));
 
         return userMapper.toDto(user);
     }
@@ -111,7 +111,7 @@ public class BasicUserService implements UserService {
     @Override
     public UserResponseDto updateUser(UUID userId, UserUpdateRequestDto userUpdateRequestDto, MultipartFile profile) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUNT));
+                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND));
 
         if (userUpdateRequestDto.getNewUsername() != null && !userUpdateRequestDto.getNewUsername().isBlank()) {
             user.setUserName(userUpdateRequestDto.getNewUsername());
@@ -153,7 +153,7 @@ public class BasicUserService implements UserService {
     @Override
     public void deleteUser(UUID uuid) {
         User user = userRepository.findById(uuid)
-                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUNT));
+                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND));
 
         log.info("Deleted Username = {}, UserStatus = {}, UserProfile = {}",
                 user.getUsername(), user.getUserStatus(), user.getProfile());

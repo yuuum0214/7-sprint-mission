@@ -68,16 +68,16 @@ public class BasicChannelService implements ChannelService {
 
         //유저별 ReadStatus 생성
         for (UUID userId : participantIds) {
-            User user =  userRepository.findById(userId)
-                    .orElseThrow(()->new UserNotFoundException(ErrorCode.USER_NOT_FOUNT));
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND));
             ReadStatus readStatus = new ReadStatus(user, channel);
             channel.getReadStatuses().add(readStatus);
             readStatusRepository.save(readStatus);
         }
 
         List<String> usernames = participantIds.stream()
-                .map(id->userRepository.findById(id)
-                        .orElseThrow(()->new UserNotFoundException(ErrorCode.USER_NOT_FOUNT))
+                .map(id -> userRepository.findById(id)
+                        .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND))
                         .getUsername())
                 .toList();
 
@@ -88,18 +88,7 @@ public class BasicChannelService implements ChannelService {
     @Transactional
     @Override
     public List<ChannelResponseDto> findAllByUserId(UUID userId) {
-        List<Channel> channels = channelRepository.findAll().stream()
-                .filter(channel -> {
-                    if(channel.getType().equals(PUBLIC)) {
-                        return true;
-                    }
-                    if(channel.getType().equals(PRIVATE)) {
-                        return channel.getReadStatuses().stream()
-                                .anyMatch(rs->rs.getUser().getId().equals(userId));
-                    }
-                    return false;
-                })
-                .toList();
+        List<Channel> channels = channelRepository.findAllAvailableForUser(userId);
 
         return channels.stream()
                 .map(channelMapper::toDto)
@@ -120,7 +109,7 @@ public class BasicChannelService implements ChannelService {
     @Override
     public ChannelUpdateResponseDto findById(UUID channelId) {
         Channel channel = channelRepository.findById(channelId)
-                .orElseThrow(() -> new ChannelNotFoundException(ErrorCode.CHANNEL_NOT_FOUNT));
+                .orElseThrow(() -> new ChannelNotFoundException(ErrorCode.CHANNEL_NOT_FOUND));
         //가장 최근 메시지 시간 정보 포함
         Instant lastMessageAt = messageRepository.findLastByChannel(channel).orElse(null);
 
@@ -128,7 +117,7 @@ public class BasicChannelService implements ChannelService {
         List<UUID> participantIds = null;
         if (channel.getType() == ChannelType.PRIVATE) {
             participantIds = readStatusRepository.findById(channelId).stream()
-                    .map(rs->rs.getUser().getId())
+                    .map(rs -> rs.getUser().getId())
                     .toList();
         }
 
@@ -139,14 +128,14 @@ public class BasicChannelService implements ChannelService {
     @Override
     public ChannelResponseDto updateChannel(UUID uuid, ChannelUpdateRequestDto channelUpdateRequestDto) {
         Channel channel = channelRepository.findById(uuid)
-                .orElseThrow(() -> new ChannelNotFoundException(ErrorCode.CHANNEL_NOT_FOUNT));
-        if(channel.getType() == PRIVATE){
+                .orElseThrow(() -> new ChannelNotFoundException(ErrorCode.CHANNEL_NOT_FOUND));
+        if (channel.getType() == PRIVATE) {
             throw new ChannelNotUpdateException(ErrorCode.PRIVATE_CHANNEL_NOT_IMPOSABLE_UPDATED);
         }
 
         channel.setUpdate(channelUpdateRequestDto.getNewName(), channelUpdateRequestDto.getNewDescription());
 
-        log.info("Update Channel Name : {}",  channelUpdateRequestDto.getNewName());
+        log.info("Update Channel Name : {}", channelUpdateRequestDto.getNewName());
         log.info("Update Channel Description : {}", channelUpdateRequestDto.getNewDescription());
 
         return channelMapper.toDto(channel);
@@ -156,7 +145,7 @@ public class BasicChannelService implements ChannelService {
     @Override
     public void deleteChannel(UUID channelId) {
         Channel channel = channelRepository.findById(channelId).orElse(null);
-        if(channel == null) return;
+        if (channel == null) return;
 
         log.info("Delete Channel Id: {}", channel.getId());
         log.info("Delete Channel Name: {}", channel.getName());

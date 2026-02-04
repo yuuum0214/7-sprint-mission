@@ -31,7 +31,6 @@ public class ChannelController implements ChannelApi {
     @PostMapping("/public")
     public ResponseEntity<ChannelResponseDto> createPublicChannel(
             @Valid @RequestBody ChannelPublicCreateRequestDto channelPublicCreateRequestDto) {
-//        Channel channel = channelService.createPublicChannel(channelPublicCreateRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(channelService.createPublicChannel(channelPublicCreateRequestDto));
     }
@@ -39,7 +38,6 @@ public class ChannelController implements ChannelApi {
     // 비공개 채널 생성
     @PostMapping("/private")
     public ResponseEntity<ChannelResponseDto> createPrivateChannel(@RequestBody ChannelPrivateCreateRequestDto channelPrivateCreateRequestDto) {
-//        Channel channel = channelService.createPrivateChannel(channelPrivateCreateRequestDto);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(channelService.createPrivateChannel(channelPrivateCreateRequestDto));
     }
