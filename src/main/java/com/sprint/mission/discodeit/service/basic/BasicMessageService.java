@@ -8,7 +8,6 @@ import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
 import com.sprint.mission.discodeit.exception.ErrorCode;
-import com.sprint.mission.discodeit.exception.binarycontent.BinaryContentBadRequestException;
 import com.sprint.mission.discodeit.exception.binarycontent.BinaryContentSaveFailException;
 import com.sprint.mission.discodeit.exception.channel.ChannelNotFoundException;
 import com.sprint.mission.discodeit.exception.message.MessageNotFoundException;
@@ -73,7 +72,7 @@ public class BasicMessageService implements MessageService {
                     attachments.add(saved);
                 } catch (IOException e){
                     log.error("파일 저장 실패", e);
-                    throw new BinaryContentSaveFailException(ErrorCode.BINARY_CONTENT_SAVE_FAIL);
+                    throw new BinaryContentSaveFailException(ErrorCode.BINARY_CONTENT_SAVE_FAILED);
                 }
             }
         }

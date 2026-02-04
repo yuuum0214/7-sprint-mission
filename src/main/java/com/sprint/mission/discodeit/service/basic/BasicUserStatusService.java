@@ -74,9 +74,7 @@ public class BasicUserStatusService implements UserStatusService {
     public UserStatusResponseDto updateByUserId(UUID userId, UserStatusUpdateRequestDto userStatusUpdateRequestDto) {
         UserStatus userStatus = userStatusRepository.findByUser_Id(userId)
                 .orElseThrow(()->new IllegalArgumentException("User를 찾을 수 없습니다."));
-//        if (userStatus == null) {
-//            throw new RuntimeException("해당 유저의 상태를 찾을 수 없습니다");
-//        }
+
         if (userStatusUpdateRequestDto.getNewLastActiveAt() != null) {
             userStatus.updateLastActiveAt(userStatusUpdateRequestDto.getNewLastActiveAt());
         }
