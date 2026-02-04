@@ -3,6 +3,8 @@ package com.sprint.mission.discodeit.service.basic;
 import com.sprint.mission.discodeit.dto.request.LoginRequestDto;
 import com.sprint.mission.discodeit.dto.response.LoginResponseDto;
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.exception.ErrorCode;
+import com.sprint.mission.discodeit.exception.auth.AuthFailException;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.service.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +22,10 @@ public class BasicAuthService implements AuthService {
     @Override
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
         User user = userRepository.findByUsername(loginRequestDto.getUsername()
-        ).orElseThrow(() -> new IllegalArgumentException("아이디 또는 비밀번호가 일치하지 않습니다."));
+        ).orElseThrow(() -> new AuthFailException(ErrorCode.AUTH_INVALID_CREDENTIALS));
 
         if(!user.getPassword().equals(loginRequestDto.getPassword())){
-            throw new IllegalArgumentException("아이디 또는 비밀번호가 일치하지 않습니다.");
+            throw new AuthFailException(ErrorCode.AUTH_INVALID_CREDENTIALS);
         }
 
         user.getUserStatus().updateLastActiveAt(Instant.now());
