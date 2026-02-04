@@ -1,0 +1,9 @@
+package com.sprint.mission.discodeit.exception.binarycontent;
+
+import com.sprint.mission.discodeit.exception.ErrorCode;
+
+public class BinaryContentSaveFailException extends BinaryContentException{
+    public BinaryContentSaveFailException(ErrorCode errorCode) {
+        super(errorCode);
+    }
+}

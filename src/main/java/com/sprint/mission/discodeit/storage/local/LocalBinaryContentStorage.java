@@ -1,6 +1,8 @@
 package com.sprint.mission.discodeit.storage.local;
 
 import com.sprint.mission.discodeit.dto.response.BinaryContentResponseDto;
+import com.sprint.mission.discodeit.exception.ErrorCode;
+import com.sprint.mission.discodeit.exception.binarycontent.*;
 import com.sprint.mission.discodeit.storage.BinaryContentStorage;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +44,7 @@ public class LocalBinaryContentStorage implements BinaryContentStorage {
             }
         } catch(Exception e){
             log.error("로컬 저장소 초기화 실패", e);
-            throw new RuntimeException("로컬 저장소 초기화 실패", e);
+            throw new BinaryContentInitFailedException(ErrorCode.BINARY_LOCAL_STORAGE_INIT_FAILED);
         }
     }
 
@@ -59,7 +61,7 @@ public class LocalBinaryContentStorage implements BinaryContentStorage {
             return uuid;
         } catch(IOException e){
             log.error("파일 저장 실패: {}", uuid, e);
-            throw new RuntimeException("파일 저장 실패: " + uuid, e);
+            throw new BinaryContentSaveFailException(ErrorCode.BINARY_CONTENT_SAVE_FAILED);
         }
     }
 
@@ -68,12 +70,12 @@ public class LocalBinaryContentStorage implements BinaryContentStorage {
          try {
              Path filePath = resolvePath(uuid);
              if(!Files.exists(filePath)){
-                 throw new IllegalArgumentException("파일을 찾을 수 없습니다: " + uuid);
+                 throw new BinaryContentNotFoundException(ErrorCode.BINARY_CONTENT_NOT_FOUND);
              }
              return new FileInputStream(filePath.toFile());
          } catch(IOException e){
              log.error("파일 읽기 실패: {}", uuid, e);
-             throw new RuntimeException("파일 읽기 실패: " + uuid, e);
+             throw new BinaryContentBadRequestException(ErrorCode.BINARY_CONTENT_READ_FAILED);
          }
     }
 
@@ -91,7 +93,7 @@ public class LocalBinaryContentStorage implements BinaryContentStorage {
                     .body(resource);
         } catch (Exception e){
             log.error("파일 다운로드 실패: {}", binaryContentResponseDto.getId(), e);
-            throw new RuntimeException("파일 다운로드 실패", e);
+            throw new BinaryContentDownloadFailedException(ErrorCode.BINARY_CONTENT_DOWNLOAD_FAILED);
         }
     }
 }
