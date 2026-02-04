@@ -26,7 +26,5 @@ public interface MessageRepository extends JpaRepository<Message, UUID> {
 
     Optional<Instant> findLastByChannel(Channel channel); // 가장 마지막에 온 메시지
 
-    // 메시지 삭제 : delete
-
     void deleteAllByChannelId(Channel channel); // 특정 채널의 모든 메시지 삭제
 }
