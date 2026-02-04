@@ -7,6 +7,12 @@ import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.entity.Channel;
 import com.sprint.mission.discodeit.entity.Message;
 import com.sprint.mission.discodeit.entity.User;
+import com.sprint.mission.discodeit.exception.ErrorCode;
+import com.sprint.mission.discodeit.exception.binarycontent.BinaryContentBadRequestException;
+import com.sprint.mission.discodeit.exception.binarycontent.BinaryContentSaveFailException;
+import com.sprint.mission.discodeit.exception.channel.ChannelNotFoundException;
+import com.sprint.mission.discodeit.exception.message.MessageNotFoundException;
+import com.sprint.mission.discodeit.exception.user.UserNotFoundException;
 import com.sprint.mission.discodeit.mapper.MessageMapper;
 import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import com.sprint.mission.discodeit.repository.ChannelRepository;
@@ -46,10 +52,10 @@ public class BasicMessageService implements MessageService {
     public MessageResponseDto createMessage(MessageCreateRequestDto messageCreateRequestDto,
                                             List<MultipartFile> files) {
         Channel channel = channelRepository.findById(messageCreateRequestDto.getChannelId())
-                .orElseThrow(() -> new IllegalStateException("채널정보를 찾을 수 없습니다."));
+                .orElseThrow(() -> new ChannelNotFoundException(ErrorCode.CHANNEL_NOT_FOUND));
 
         User user = userRepository.findById(messageCreateRequestDto.getAuthorId())
-                .orElseThrow(() -> new IllegalStateException("작성자가 없습니다."));
+                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND));
 
         List<BinaryContent> attachments = new ArrayList<>();
         if (files != null && !files.isEmpty()) {
@@ -67,7 +73,7 @@ public class BasicMessageService implements MessageService {
                     attachments.add(saved);
                 } catch (IOException e){
                     log.error("파일 저장 실패", e);
-                    throw new RuntimeException("파일 저장 실패", e);
+                    throw new BinaryContentSaveFailException(ErrorCode.BINARY_CONTENT_SAVE_FAIL);
                 }
             }
         }
@@ -80,6 +86,8 @@ public class BasicMessageService implements MessageService {
         );
         messageRepository.save(message);
 
+        log.info("Created Message Username : {}", message.getAuthor().getUsername());
+        log.info("Created Message ChannelType: {} | ChannelName: {}", message.getChannel().getType(), message.getChannel().getName());
         return messageMapper.toDto(message);
     }
 
@@ -95,7 +103,7 @@ public class BasicMessageService implements MessageService {
     @Override
     public List<MessageResponseDto> findUserAllMessage(UUID userId) {
         if (userId == null) {
-            throw new IllegalStateException("유저 정보가 없습니다.");
+            throw new UserNotFoundException(ErrorCode.USER_NOT_FOUND);
         }
 
         List<Message> messages = messageRepository.findAll().stream()
@@ -109,7 +117,7 @@ public class BasicMessageService implements MessageService {
     @Override
     public Slice<MessageResponseDto> findChannelAllMessage(UUID channelId, Pageable pageable) {
         if (channelId == null) {
-            throw new IllegalArgumentException("채널 정보가 없습니다.");
+            throw new ChannelNotFoundException(ErrorCode.CHANNEL_NOT_FOUND);
         }
         Slice<Message> messages = messageRepository.findAllByChannelId(channelId, pageable);
 
@@ -120,16 +128,13 @@ public class BasicMessageService implements MessageService {
     @Override
     public MessageResponseDto updateMessage(UUID messageId, MessageUpdateRequestDto messageUpdateRequestDto) {
         Message message = messageRepository.findById(messageId)
-                .orElseThrow(() -> new IllegalArgumentException("수정할 메시지를 찾을 수 없습니다."));
+                .orElseThrow(() -> new MessageNotFoundException(ErrorCode.MESSAGE_NOT_FOUND));
 
         message.setUpdate(messageUpdateRequestDto.getNewContent());
 
-//        List<BinaryContent> attachments = message.getAttachments() != null
-//                ? new ArrayList<>(message.getAttachments())
-//                : new ArrayList<>();
-//        message.setAttachmentIds(attachments);
-//        messageRepository.save(message);
-
+        log.info("Updated Message Username: {}", message.getAuthor().getUsername());
+        log.info("Updated Message ChannelType: {} | ChannelName: {}", message.getChannel().getType(), message.getChannel().getName());
+        log.info("Updated Message Content: {}", message.getContent());
         return messageMapper.toDto(message);
     }
 
@@ -137,7 +142,7 @@ public class BasicMessageService implements MessageService {
     @Override
     public void deleteMessage(UUID uuid) {
         Message message = messageRepository.findById(uuid)
-                .orElseThrow(() -> new IllegalArgumentException("삭제할 메시지를 찾을 수 없습니다."));
+                .orElseThrow(() -> new MessageNotFoundException(ErrorCode.MESSAGE_NOT_FOUND));
 
         List<BinaryContent> attachments = message.getAttachments();
         if (attachments != null) {
@@ -147,6 +152,7 @@ public class BasicMessageService implements MessageService {
         }
 
         messageRepository.delete(message);
-        System.out.println("[Message 삭제] : " + messageRepository.findById(uuid));
+        log.info("Deleted Message Username: {}", message.getAuthor().getUsername());
+        log.info("Deleted Message ChannelType: {} | ChannelName : {}", message.getChannel().getType(), message.getChannel().getName());
     }
 }

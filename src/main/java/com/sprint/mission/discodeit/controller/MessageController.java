@@ -69,15 +69,7 @@ public class MessageController implements MessageApi {
             @RequestParam UUID channelId,
             @PageableDefault(size = 50, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        log.info("=== Message 조회 ===");
-        log.info("channelId: {}", channelId);
-        log.info("pageable: {}", pageable);
-
-        var channel = channelRepository.findById(channelId)
-                .orElseThrow(() -> new IllegalArgumentException("채널을 찾을 수 없습니다."));
-
         Slice<MessageResponseDto> messages = messageService.findChannelAllMessage(channelId, pageable);
-
         return PageResponseMapper.fromSlice(messages);
     }
 }
