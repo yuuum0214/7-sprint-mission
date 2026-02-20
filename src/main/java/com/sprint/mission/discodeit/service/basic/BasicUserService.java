@@ -86,8 +86,8 @@ public class BasicUserService implements UserService {
 
         userStatusRepository.save(userStatus);
 
-        log.info("Created UserStatus = {}", user.getUserStatus().isOnline());
         log.info("Created User = {}", userCreateRequest.getUsername());
+        log.info("Created UserStatus = {}", savedUser.getUserStatus().isOnline());
 
         return userMapper.toDto(savedUser);
     }
