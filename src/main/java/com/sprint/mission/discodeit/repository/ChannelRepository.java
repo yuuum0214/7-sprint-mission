@@ -10,10 +10,11 @@ import java.util.UUID;
 
 public interface ChannelRepository extends JpaRepository<Channel, UUID> {
     @Query("SELECT c FROM Channel c " +
+            "LEFT JOIN c.readStatuses rs_filter " +
             "LEFT JOIN FETCH c.readStatuses rs " +
             "LEFT JOIN FETCH rs.user " +
             "WHERE c.type = 'PUBLIC' " +
-            "OR (c.type = 'PRIVATE' AND rs.user.id = :userId)")
+            "OR (c.type = 'PRIVATE' AND rs_filter.user.id = :userId)")
     List<Channel> findAllAvailableForUser(UUID userId);
 
     @Query("SELECT DISTINCT c FROM Channel c LEFT JOIN FETCH c.readStatuses rs LEFT JOIN FETCH rs.user WHERE c.id = :id")

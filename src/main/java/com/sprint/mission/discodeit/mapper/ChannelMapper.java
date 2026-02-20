@@ -34,8 +34,8 @@ public class ChannelMapper {
         return ChannelResponseDto.builder()
                 .id(channel.getId())
                 .type(channel.getType())
-                .name(channel.getName() != null ? channel.getName() : "")
-                .description(channel.getDescription() != null ? channel.getDescription() : "")
+                .name(channel.getName())
+                .description(channel.getDescription())
                 .participants(participants)
                 .lastMessageAt(lastMessageAt)
                 .build();
