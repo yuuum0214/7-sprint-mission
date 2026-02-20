@@ -35,7 +35,8 @@ public class ChannelController implements ChannelApi {
 
     // 비공개 채널 생성
     @PostMapping("/private")
-    public ResponseEntity<ChannelResponseDto> createPrivateChannel(@RequestBody ChannelPrivateCreateRequestDto channelPrivateCreateRequestDto) {
+    public ResponseEntity<ChannelResponseDto> createPrivateChannel(
+            @RequestBody ChannelPrivateCreateRequestDto channelPrivateCreateRequestDto) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(channelService.createPrivateChannel(channelPrivateCreateRequestDto));
     }

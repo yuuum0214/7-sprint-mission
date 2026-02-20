@@ -45,6 +45,7 @@ public class BasicChannelService implements ChannelService {
     public ChannelResponseDto createPublicChannel(ChannelPublicCreateRequestDto channelPublicCreateRequestDto) {
         if (channelPublicCreateRequestDto.getName() == null
                 || channelPublicCreateRequestDto.getName().isBlank()) {
+            log.error("Channel Name is Blank : {}", channelPublicCreateRequestDto.getName());
             throw new ChannelNotFoundException(ErrorCode.CHANNEL_NAME_NOT_BLANK);
         }
 
@@ -61,6 +62,7 @@ public class BasicChannelService implements ChannelService {
     public ChannelResponseDto createPrivateChannel(ChannelPrivateCreateRequestDto channelPrivateCreateRequestDto) {
         List<UUID> participantIds = channelPrivateCreateRequestDto.getParticipantIds();
         if (participantIds == null || participantIds.size() <= 1) {
+            log.error("Less Participant : {} ", participantIds);
             throw new ChannelParticipantsException(ErrorCode.CHANNEL_PRIVATE_PARTICIPANTS);
         }
         Channel channel = new Channel(PRIVATE);
@@ -82,6 +84,7 @@ public class BasicChannelService implements ChannelService {
                 .toList();
 
         log.info("Created Private Channel : {}", usernames);
+
         return channelMapper.toDto(channel);
     }
 
