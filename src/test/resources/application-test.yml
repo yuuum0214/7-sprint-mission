@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:test_db;MODE=Postgresql;DATABASE_TO_LOWER=TRUE
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true

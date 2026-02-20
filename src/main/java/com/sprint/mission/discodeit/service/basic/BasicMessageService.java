@@ -106,7 +106,7 @@ public class BasicMessageService implements MessageService {
         }
 
         List<Message> messages = messageRepository.findAll().stream()
-                .filter(m -> m.getId().equals(userId))
+                .filter(m -> m.getAuthor().getId().equals(userId))
                 .sorted(Comparator.comparing(Message::getCreatedAt))
                 .toList();
         return messageMapper.toDtoList(messages);
