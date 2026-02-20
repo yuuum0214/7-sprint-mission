@@ -3,7 +3,6 @@ package com.sprint.mission.discodeit.exception;
 import lombok.Getter;
 
 import java.time.Instant;
-import java.util.HashMap;
 import java.util.Map;
 
 @Getter
@@ -14,9 +13,9 @@ public class DiscodeitException extends RuntimeException {
     private final Map<String, Object> details;
 
     public DiscodeitException(ErrorCode errorCode) {
-        super(errorCode.getMessage()); // todo: 꼭 필요한 지 알아보기
+        super(errorCode.getMessage());
         this.timestamp = Instant.now();
         this.errorCode = errorCode;
-        this.details = new HashMap<>();
+        this.details = Map.of();
     }
 }

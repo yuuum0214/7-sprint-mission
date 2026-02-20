@@ -31,6 +31,6 @@ public enum ErrorCode {
     AUTH_INVALID_CREDENTIALS(HttpStatus.UNAUTHORIZED, "아이디 또는 비밀번호가 일치하지 않습니다.", "A-001");
 
     private final HttpStatus status;
-    private final String code;
     private final String message;
+    private final String code;
 }
