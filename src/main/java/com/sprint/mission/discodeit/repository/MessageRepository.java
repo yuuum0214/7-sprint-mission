@@ -24,7 +24,6 @@ public interface MessageRepository extends JpaRepository<Message, UUID> {
             "WHERE m.channel.id = :channelId")
     List<Message> findByChannelId(UUID channelId); // 채널에 속한 메시지의 파일 확인
 
+    @Query("SELECT MAX(m.createdAt) FROM Message m WHERE m.channel = :channel")
     Optional<Instant> findLastByChannel(Channel channel); // 가장 마지막에 온 메시지
-
-    void deleteAllByChannelId(Channel channel); // 특정 채널의 모든 메시지 삭제
 }

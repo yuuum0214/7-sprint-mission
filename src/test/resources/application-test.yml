@@ -6,3 +6,12 @@ spring:
     hibernate:
       ddl-auto: create-drop
     show-sql: true
+    properties:
+      hibernate:
+        format_sql: true # SQL을 한 줄이 아닌 보기 좋게 출력
+        highlight_sql: true # 콘솔에서 SQL 키워드 색상 강조 (선택 사항)
+        dialect: org.hibernate.dialect.PostgreSQLDialect # 방언 명시
+
+logging:
+  level:
+    org.hibernate.orm.jdbc.bind: trace
