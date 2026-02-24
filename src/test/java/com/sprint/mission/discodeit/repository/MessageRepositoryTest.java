@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.time.Instant;
@@ -24,6 +25,7 @@ import static org.assertj.core.api.Assertions.within;
 
 @DataJpaTest
 @ActiveProfiles("test")
+@EnableJpaAuditing
 class MessageRepositoryTest {
 
     @Autowired
@@ -45,7 +47,7 @@ class MessageRepositoryTest {
         Channel channel = em.persist(new Channel("publicChannel", ChannelType.PUBLIC, "public"));
 
         for (int i = 0; i < 11; i++) {
-            em.persist(new Message(channel, author, "content " + i, null));
+            em.persist(new Message(channel, author, String.format("content %02d", i), null));
         }
         em.flush();
         em.clear();
@@ -54,7 +56,7 @@ class MessageRepositoryTest {
                 0,
                 10,
                 Sort.by(Sort.Order.desc("createdAt"),
-                        Sort.Order.desc("id")));
+                        Sort.Order.desc("content")));
 
         // when
         Slice<Message> slice = messageRepository.findAllByChannelId(channel.getId(), pageable);
